@@ -11,16 +11,16 @@
 ### **👨‍💻 실습 과제: 사용자 & 게시판 API 만들기**
 
 - [ ]  **회원 관리 API** (`UserController`)
-    -[ ] 회원 가입 (`POST /users`)
-    -[ ] 회원 정보 조회 (`GET /users/{id}`)
-    -[ ] 회원 정보 수정 (`PUT /users/{id}`)
-    -[ ] 회원 삭제 (`DELETE /users/{id}`)
+    - [ ] 회원 가입 (`POST /users`)
+    - [ ] 회원 정보 조회 (`GET /users/{id}`)
+    - [ ] 회원 정보 수정 (`PUT /users/{id}`)
+    - [ ] 회원 삭제 (`DELETE /users/{id}`)
 - [ ]  **게시판 API** (`PostController`)
-    -[ ] 게시글 작성 (`POST /posts`)
-    -[ ] 게시글 목록 조회 (`GET /posts`)
-    -[ ] 게시글 상세 조회 (`GET /posts/{id}`)
-    -[ ] 게시글 수정 (`PUT /posts/{id}`)
-    -[ ] 게시글 삭제 (`DELETE /posts/{id}`)
+    - [ ] 게시글 작성 (`POST /posts`)
+    - [ ] 게시글 목록 조회 (`GET /posts`)
+    - [ ] 게시글 상세 조회 (`GET /posts/{id}`)
+    - [ ] 게시글 수정 (`PUT /posts/{id}`)
+    - [ ] 게시글 삭제 (`DELETE /posts/{id}`)
 - [ ]  **DTO & Service 계층 분리**
 - [ ]  **Spring Validation을 활용한 입력값 검증**
 - [ ]  **예외 처리 (`@RestControllerAdvice`)**
