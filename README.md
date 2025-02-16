@@ -1,4 +1,7 @@
+# 🚀 Rocket
+
 **📅 목표 기간:** 6개월 (각 실습은 2~3주 내 완성)
+
 **📌 주요 키워드:** Spring Boot, JPA, AWS, Nginx, Docker, CI/CD
 ---
 
