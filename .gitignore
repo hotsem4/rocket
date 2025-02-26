@@ -304,5 +304,5 @@ $RECYCLE.BIN/
 *.lnk
 
 application-db.yml
-applicaiton.yml
+application.yml
 # End of https://www.toptal.com/developers/gitignore/api/intellij,macos,java,windows,eclipse
