@@ -6,7 +6,6 @@ import com.rocket.domains.user.domain.enums.Gender;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface UserRepository {
