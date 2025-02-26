@@ -13,22 +13,22 @@
 
 ### **👨‍💻 실습 과제: 사용자 & 게시판 API 만들기**
 
-- [ ]  **회원 관리 API** (`UserController`)
-    - [ ] 회원 가입 (`POST /users`)
-    - [ ] 회원 정보 조회 (`GET /users/{id}`)
-    - [ ] 회원 정보 수정 (`PUT /users/{id}`)
-    - [ ] 회원 삭제 (`DELETE /users/{id}`)
-- [ ]  **게시판 API** (`PostController`)
-    - [ ] 게시글 작성 (`POST /posts`)
-    - [ ] 게시글 목록 조회 (`GET /posts`)
-    - [ ] 게시글 상세 조회 (`GET /posts/{id}`)
-    - [ ] 게시글 수정 (`PUT /posts/{id}`)
-    - [ ] 게시글 삭제 (`DELETE /posts/{id}`)
-- [ ]  **DTO & Service 계층 분리**
-- [ ]  **Spring Validation을 활용한 입력값 검증**
-- [ ]  **예외 처리 (`@RestControllerAdvice`)**
-- [ ]  **Postman 또는 Swagger로 API 테스트**
-- [ ]  **GitHub에 코드 업로드**
+- [x]  **회원 관리 API** (`UserController`)
+    - [x] 회원 가입 (`POST /users`)
+    - [x] 회원 정보 조회 (`GET /users/{id}`)
+    - [x] 회원 정보 수정 (`PUT /users/{id}`)
+    - [x] 회원 삭제 (`DELETE /users/{id}`)
+- [x]  **게시판 API** (`PostController`)
+    - [x] 게시글 작성 (`POST /posts`)
+    - [x] 게시글 목록 조회 (`GET /posts`)
+    - [x] 게시글 상세 조회 (`GET /posts/{id}`)
+    - [x] 게시글 수정 (`PUT /posts/{id}`)
+    - [x] 게시글 삭제 (`DELETE /posts/{id}`)
+- [x]  **DTO & Service 계층 분리**
+- [x]  **Spring Validation을 활용한 입력값 검증**
+- [x]  **예외 처리 (`@RestControllerAdvice`)**
+- [x]  **Postman 또는 Swagger로 API 테스트**
+- [x]  **GitHub에 코드 업로드**
 
 ### ✅ **완료 조건:** API 정상 작동 & 테스트 성공
 
