@@ -2,7 +2,6 @@ package com.rocket.domains.posts.application.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -16,6 +15,7 @@ import com.rocket.domains.posts.application.dto.request.PostUpdateDTO;
 import com.rocket.domains.posts.application.dto.response.PostInfoDTO;
 import com.rocket.domains.posts.domain.entity.Post;
 import com.rocket.domains.posts.domain.enums.repository.PostRepository;
+import com.rocket.domains.user.domain.service.UserLookupService;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
@@ -30,6 +30,8 @@ import org.mockito.MockitoAnnotations;
 class PostServiceImplTest {
   @Mock
   private PostRepository postRepository;
+  @Mock
+  private UserLookupService userLookupService;
 
   @InjectMocks
   private PostServiceImpl postService;
@@ -50,6 +52,7 @@ class PostServiceImplTest {
   @Test
   void savePost_success() {
     // Given
+    when(userLookupService.existsById(anyLong())).thenReturn(true); // 작성자 ID 유효하다고 가정
     when(postRepository.savePost(any(Post.class))).thenReturn(post);
 
     // When
@@ -65,6 +68,7 @@ class PostServiceImplTest {
   @DisplayName("게시글 저장 - 실패 (빈 제목)")
   @Test
   void savePost_fail_emptyTitle() {
+    when(userLookupService.existsById(anyLong())).thenReturn(true); // 작성자 ID 유효하다고 가정
     PostDTO invalidDto = new PostDTO("", "Valid Content", 1L, 0);
 
     assertThatThrownBy(() -> postService.savePost(invalidDto))
@@ -75,6 +79,8 @@ class PostServiceImplTest {
   @DisplayName("게시글 저장 - 실패 (빈 내용)")
   @Test
   void savePost_fail_emptyContent() {
+    when(userLookupService.existsById(anyLong())).thenReturn(true); // 작성자 ID 유효하다고 가정
+
     PostDTO invalidDto = new PostDTO("Valid Title", "", 1L, 0);
 
     assertThatThrownBy(() -> postService.savePost(invalidDto))
@@ -95,7 +101,7 @@ class PostServiceImplTest {
 
     // Then
     assertThat(result).isNotEmpty();
-    assertThat(result.get(0).title()).isEqualTo(post.getTitle());
+    assertThat(result.getFirst().title()).isEqualTo(post.getTitle());
     verify(postRepository, times(1)).findByTitle(anyString());
   }
 

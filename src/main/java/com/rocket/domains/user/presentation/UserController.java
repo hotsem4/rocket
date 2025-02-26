@@ -29,11 +29,6 @@ public class UserController {
     this.userService = userService;
   }
 
-  /**
-   * ToDo
-   * age의 경우 String으로 들어오는데 RequestBody로 int 자동 매핑이 되나?
-   * 안된다는 것을 확인 직접 Integer.pareInt로 변환 필요
-   */
   @PostMapping("/save")
   @Operation(summary = "사용자 등록", description = "새로운 사용자를 등록합니다.")
   public ResponseEntity<String> postSaveUser(@Valid @RequestBody UserRegisterDTO dto) {
@@ -70,7 +65,7 @@ public class UserController {
   @DeleteMapping("/{email}")
   @Operation(summary = "사용자 삭제", description = "사용자를 삭제합니다.")
   public ResponseEntity<String> deleteUser(@PathVariable String email) {
-    Boolean doDelete = userService.deleteByEmail(email);
+    userService.deleteByEmail(email);
     return ResponseEntity.ok(String.format("%s 계정이 삭제되었습니다.", email));
   }
 }
