@@ -67,4 +67,11 @@ public class PostController {
       return ResponseEntity.notFound().build();
     }
   }
+
+  @PutMapping("/{id}/like")
+  @Operation(summary = "게시글 좋아요 증가", description = "게시글 ID를 기반으로 좋아요 수를 1 증가시킵니다.")
+  public ResponseEntity<PostInfoDTO> likeCountIncrement(@PathVariable Long id) {
+    PostInfoDTO updatedPost = postService.likeCountIncrement(id);
+    return ResponseEntity.ok(updatedPost);
+  }
 }

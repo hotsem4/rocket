@@ -219,4 +219,32 @@ class PostServiceImplTest {
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessageContaining("해당 ID의 게시글을 찾을 수 없습니다.");
   }
+
+  @DisplayName("게시글 좋아요 증가 - 성공")
+  @Test
+  void likeCountIncrement_success() {
+    // Given
+    // Repository의 incrementLikeCount()가 성공적으로 업데이트된다고 가정합니다.
+    when(postRepository.incrementLikeCount(anyLong())).thenReturn(true);
+
+    // findById()가 업데이트된 게시글을 반환하도록 stub 합니다.
+    // 업데이트된 게시글은 좋아요 수가 1 증가한 상태로 가정합니다.
+    Post updatedPost = new Post(1L, "Test Title", "Test Content", 1L, LocalDateTime.now()) {
+      @Override
+      public int getLikeCount() {
+        return 1; // 좋아요 수가 1로 증가한 상태
+      }
+    };
+    when(postRepository.findById(anyLong())).thenReturn(Optional.of(updatedPost));
+
+    // When
+    PostInfoDTO result = postService.likeCountIncrement(1L);
+
+    // Then
+    assertThat(result).isNotNull();
+    assertThat(result.likeCount()).isEqualTo(1);
+    verify(postRepository, times(1)).incrementLikeCount(anyLong());
+    verify(postRepository, times(1)).findById(anyLong());
+  }
+
 }

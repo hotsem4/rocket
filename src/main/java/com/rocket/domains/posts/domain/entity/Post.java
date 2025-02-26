@@ -54,16 +54,6 @@ public class Post {
     return likeCount;
   }
 
-  // 좋아요 수 증가 (이 메서드를 통해서만 변경 가능)
-  public void increaseLikeCount() {
-    this.likeCount++;
-  }
-
-  // 제목 수정 (불변성 유지)
-  public Post updateTitle(String title) {
-    return new Post(id, title, content, authorId, createdAt);
-  }
-
   // 빌더 클래스 (likeCount 필드 없음)
   public static class Builder {
     private String title;

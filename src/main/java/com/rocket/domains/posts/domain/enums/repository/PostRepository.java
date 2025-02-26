@@ -21,4 +21,6 @@ public interface PostRepository {
   Boolean deleteById(Long id);
 
   Boolean updateById(Long id, String title, String content);
+
+  Boolean incrementLikeCount(Long id);
 }

@@ -11,6 +11,7 @@ import com.rocket.domains.user.domain.service.UserLookupService;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -24,6 +25,7 @@ public class PostServiceImpl implements PostService {
   }
 
   @Override
+  @Transactional
   public PostInfoDTO savePost(PostDTO dto) {
     if (!userLookupService.existsById(dto.authorId())) {
       throw new IllegalArgumentException("유효하지 않은 작성자 ID입니다.");
@@ -60,6 +62,7 @@ public class PostServiceImpl implements PostService {
   }
 
   @Override
+  @Transactional
   public PostInfoDTO updateById(Long id, PostUpdateDTO dto) {
     if ((dto.title() == null && dto.content() == null) ||
         (dto.title() != null && dto.title().trim().isEmpty() &&
@@ -94,6 +97,18 @@ public class PostServiceImpl implements PostService {
     Post post = postRepository.findById(id)
         .orElseThrow(() -> new PostNotFoundException(String.valueOf(id)));
     return PostInfoDTO.from(post);
-
   }
+
+  @Override
+  @Transactional
+  public PostInfoDTO likeCountIncrement(Long id) {
+    boolean updated = postRepository.incrementLikeCount(id);
+    if (!updated) {
+      throw new PostNotFoundException("게시글을 찾을 수 없습니다. ID: " + id);
+    }
+    Post updatedPost = postRepository.findById(id)
+        .orElseThrow(() -> new PostNotFoundException("업데이트 후 게시글을 찾을 수 없습니다. ID: " + id));
+    return PostInfoDTO.from(updatedPost);
+  }
+
 }

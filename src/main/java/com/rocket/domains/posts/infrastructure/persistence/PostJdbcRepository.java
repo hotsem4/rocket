@@ -115,4 +115,12 @@ public class PostJdbcRepository implements PostRepository {
     });
   }
 
+  @Override
+  public Boolean incrementLikeCount(Long id) {
+    String sql = "UPDATE posts SET like_count = like_count + 1 WHERE id = ?";
+    int rowsAffected = jdbcTemplate.update(sql, id);
+    return rowsAffected > 0;
+  }
+
+
 }
