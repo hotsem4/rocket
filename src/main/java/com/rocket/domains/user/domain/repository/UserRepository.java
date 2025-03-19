@@ -9,16 +9,16 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository {
-  Boolean saveUser(User user);
+  User saveUser(User user);
 
   Optional<User> findByEmail(String email);
   List<User> findAll();
   Boolean deleteUser(String email);
 
   Boolean existsByEmail(String email);
-  void updateAge(String email, Integer age);
-  void updateGender(String email, Gender gender);
-  void updateAddress(String email, AddressDTO address);
+  int updateAgeByEmail(String email, Integer age);
+  int updateGender(String email, Gender gender);
+  int updateAddress(String email, AddressDTO address);
 
   boolean existsById(Long id);
 }
