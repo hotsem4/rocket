@@ -29,19 +29,19 @@ public record UserRegisterDTO(
     @Valid
     AddressDTO address
 ) {
-  // DTO → User 엔티티 변환 메서드
-  public User toEntity() {
-    return new User.Builder()
-        .email(this.email)
-        .password(this.password)
-        .age(Integer.parseInt(this.age))
-        .gender(this.gender)
-        .address(new Address(
+
+  public User toEntity(){
+    return User.create(
+        this.email,
+        this.password,
+        Integer.parseInt(this.age),
+        this.gender,
+        new Address(
             this.address.state(),
             this.address.city(),
             this.address.street(),
             this.address.zipCode()
-        ))
-        .build();
+        )
+    );
   }
 }
