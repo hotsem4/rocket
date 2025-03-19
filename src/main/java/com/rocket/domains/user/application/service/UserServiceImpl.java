@@ -4,32 +4,51 @@ import com.rocket.commons.exception.exceptions.UserNotFoundException;
 import com.rocket.domains.user.application.dto.response.UserDTO;
 import com.rocket.domains.user.application.dto.request.UserRegisterDTO;
 import com.rocket.domains.user.application.dto.request.UserUpdateDTO;
+import com.rocket.domains.user.domain.entity.Address;
 import com.rocket.domains.user.domain.entity.User;
 import com.rocket.domains.user.domain.repository.UserRepository;
 import com.rocket.domains.user.domain.service.UserService;
 import java.util.List;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
-  public UserServiceImpl(UserRepository userRepository) {
+  public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
+    this.passwordEncoder = passwordEncoder;
   }
 
   @Override
   @Transactional
-  public Boolean saveUser(UserRegisterDTO dto) {
-    return userRepository.saveUser(dto.toEntity());
+  public User saveUser(UserRegisterDTO dto) {
+    String encodePassword = passwordEncoder.encode(dto.password());
+
+    User user = User.create(
+        dto.email(),
+        encodePassword,
+        Integer.parseInt(dto.age()),
+        dto.gender(),
+        new Address(
+            dto.address().state(),
+            dto.address().city(),
+            dto.address().street(),
+            dto.address().zipCode()
+        )
+    );
+    return userRepository.saveUser(user);
   }
 
   @Override
   public UserDTO findByEmail(String email) {
     User user = userRepository.findByEmail(email)
         .orElseThrow(() -> new UserNotFoundException(email));
-    return UserDTO.from(user);
+    return UserDTO.fromUser(user);
   }
 
   /**
@@ -40,7 +59,7 @@ public class UserServiceImpl implements UserService {
   public List<UserDTO> findAllUsers() {
     return userRepository.findAll()
         .stream()
-        .map(UserDTO::from)
+        .map(UserDTO::fromUser)
         .toList();
   }
 
@@ -55,7 +74,7 @@ public class UserServiceImpl implements UserService {
     }
 
     if (dto.age() != null) {
-      userRepository.updateAge(dto.email(), dto.age());
+      userRepository.updateAgeByEmail(dto.email(), dto.age());
       isUpdated = true;
     }
     if (dto.gender() != null) {
@@ -81,4 +100,12 @@ public class UserServiceImpl implements UserService {
 
     return userRepository.deleteUser(email);
   }
+
+  public Boolean authenticate(String email, String rawPassword) {
+    User user = userRepository.findByEmail(email)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+    return passwordEncoder.matches(rawPassword, user.getPassword());
+  }
+
 }
