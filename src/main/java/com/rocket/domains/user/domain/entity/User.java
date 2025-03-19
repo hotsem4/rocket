@@ -70,6 +70,22 @@ public class User {
     this.address = address;
   }
 
+  User(Long id, String email, String password, int age, Gender gender, Address address) {
+    this.id = id;
+    this.email = email;
+    this.password = password;
+    this.age = age;
+    this.gender = gender;
+    this.address = address;
+  }
+
+  // @VisibleForTesting
+  public static User createWithIdForTest(
+      Long id, String email, String password, int age, Gender gender, Address address
+  ) {
+    return new User(id, email, password, age, gender, address);
+  }
+
   @Builder
   public static User create(
       @NotBlank String email,
@@ -101,6 +117,10 @@ public class User {
     return address;
   }
 
+  public String getPassword() {
+    return password;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (o == null || getClass() != o.getClass()) {
@@ -117,4 +137,5 @@ public class User {
   public int hashCode() {
     return Objects.hash(id, email, password, age, gender, address);
   }
+
 }
