@@ -6,14 +6,16 @@ import com.rocket.domains.user.domain.enums.Gender;
 import com.rocket.domains.user.domain.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@RequiredArgsConstructor
 public class UserJpaRepositoryImpl implements UserRepository {
 
   private final UserJpaRepository userJpaRepository;
+
+  public UserJpaRepositoryImpl(UserJpaRepository userJpaRepository) {
+    this.userJpaRepository = userJpaRepository;
+  }
 
   @Override
   public User saveUser(User user) {
