@@ -1,5 +1,8 @@
 package com.rocket.domains.user.domain.entity;
 
+import jakarta.persistence.Embeddable;
+
+@Embeddable
 public record Address(String state, String city, String street, String zipCode) {
   public Address {
     if (street == null || city == null || state == null || zipCode == null) {
