@@ -29,8 +29,7 @@ public record UserDTO(
     @Valid
     Address address
 ) {
-  // User 엔티티 → UserDTO 변환 메서드
-  public static UserDTO from(User user) {
+  public static UserDTO fromUser(User user) {
     return new UserDTO(
         user.getId(),
         user.getEmail(),
@@ -38,15 +37,5 @@ public record UserDTO(
         user.getGender(),
         user.getAddress()
     );
-  }
-
-  // DTO → User 엔티티 변환 메서드 (빌더 패턴 활용)
-  public User toEntity() {
-    return new User.Builder()
-        .email(this.email)
-        .age(this.age)
-        .gender(this.gender)
-        .address(this.address)
-        .build();
   }
 }
