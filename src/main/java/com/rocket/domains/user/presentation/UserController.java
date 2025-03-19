@@ -1,5 +1,6 @@
 package com.rocket.domains.user.presentation;
 
+import com.rocket.domains.user.domain.entity.User;
 import com.rocket.domains.user.domain.service.UserService;
 import com.rocket.domains.user.application.dto.response.UserDTO;
 import com.rocket.domains.user.application.dto.request.UserRegisterDTO;
@@ -32,8 +33,8 @@ public class UserController {
   @PostMapping("/save")
   @Operation(summary = "사용자 등록", description = "새로운 사용자를 등록합니다.")
   public ResponseEntity<String> postSaveUser(@Valid @RequestBody UserRegisterDTO dto) {
-    Boolean id = userService.saveUser(dto);
-    if (id) {
+    User user = userService.saveUser(dto);
+    if (user != null) {
       return ResponseEntity.ok("계정 생성에 성공하였습니다.");
     } else {
       return ResponseEntity.ok("계정 생성에 실패하였습니다.");
