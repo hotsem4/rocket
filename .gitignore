@@ -305,4 +305,6 @@ $RECYCLE.BIN/
 
 application-db.yml
 application.yml
+application-mysql.yml
+docker-compose.yml
 # End of https://www.toptal.com/developers/gitignore/api/intellij,macos,java,windows,eclipse
