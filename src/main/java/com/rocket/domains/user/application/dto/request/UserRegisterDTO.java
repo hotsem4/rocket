@@ -1,8 +1,6 @@
 package com.rocket.domains.user.application.dto.request;
 
 import com.rocket.domains.user.application.dto.common.AddressDTO;
-import com.rocket.domains.user.domain.entity.Address;
-import com.rocket.domains.user.domain.entity.User;
 import com.rocket.domains.user.domain.enums.Gender;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -29,19 +27,4 @@ public record UserRegisterDTO(
     @Valid
     AddressDTO address
 ) {
-
-  public User toEntity(){
-    return User.create(
-        this.email,
-        this.password,
-        Integer.parseInt(this.age),
-        this.gender,
-        new Address(
-            this.address.state(),
-            this.address.city(),
-            this.address.street(),
-            this.address.zipCode()
-        )
-    );
-  }
 }
