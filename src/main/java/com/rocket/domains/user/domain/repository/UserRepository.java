@@ -5,9 +5,7 @@ import com.rocket.domains.user.domain.entity.User;
 import com.rocket.domains.user.domain.enums.Gender;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.stereotype.Repository;
 
-@Repository
 public interface UserRepository {
   User saveUser(User user);
 
