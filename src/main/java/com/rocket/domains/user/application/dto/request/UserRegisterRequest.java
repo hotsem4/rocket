@@ -1,6 +1,5 @@
 package com.rocket.domains.user.application.dto.request;
 
-import com.rocket.domains.user.application.dto.common.AddressDTO;
 import com.rocket.domains.user.domain.enums.Gender;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -8,7 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public record UserRegisterDTO(
+public record UserRegisterRequest(
     @NotBlank(message = "이메일 값이 비어 있습니다.")
     @Email(message = "올바른 이메일 형식이 아닙니다.")
     String email,
@@ -25,6 +24,11 @@ public record UserRegisterDTO(
 
     @NotNull(message = "Address 값이 null일 수 없습니다.")
     @Valid
-    AddressDTO address
+    AddressRequest address,
+
+    @NotBlank(message = "닉네임은 필수 입력값입니다.")
+    @Size(max = 30, message = "닉네임은 최대 30자까지 입력 가능합니다.")
+    String nickname
 ) {
+
 }
