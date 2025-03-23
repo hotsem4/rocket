@@ -1,6 +1,5 @@
 package com.rocket.commons.security;
 
-import com.rocket.utils.EnvLoader;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -13,10 +12,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtProvider {
-
-  static {
-    new EnvLoader(); // .env를 먼저 읽음.
-  }
 
   private final SecretKey secretKey;
   private final long tokenValidTime = 1000L * 60 * 60; // 1시간
