@@ -66,6 +66,14 @@ public class Post {
     this.likeCount = 0; // 항상 0으로 초기화
   }
 
+  public void updateTitle(String title) {
+    this.title = title;
+  }
+
+  public void updateContent(String content) {
+    this.content = content;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (o == null || getClass() != o.getClass()) {
