@@ -1,9 +1,8 @@
-package com.rocket.domains.user.infrastructure.persistence;
+package com.rocket.domains.user.infrastructure.persistence.impl;
 
-import com.rocket.domains.user.application.dto.common.AddressDTO;
 import com.rocket.domains.user.domain.entity.User;
-import com.rocket.domains.user.domain.enums.Gender;
 import com.rocket.domains.user.domain.repository.UserRepository;
+import com.rocket.domains.user.infrastructure.persistence.jpa.UserJpaRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
@@ -43,22 +42,17 @@ public class UserJpaRepositoryImpl implements UserRepository {
   }
 
   @Override
-  public int updateAgeByEmail(String email, Integer age) {
-    return userJpaRepository.updateAgeByEmail(age, email);
-  }
-
-  @Override
-  public int updateGender(String email, Gender gender) {
-    return userJpaRepository.updateGenderByEmail(gender, email);
-  }
-
-  @Override
-  public int updateAddress(String email, AddressDTO address) {
-    return userJpaRepository.updateAddressByEmail(address, email);
-  }
-
-  @Override
-  public boolean existsById(Long id) {
+  public Boolean existsById(Long id) {
     return userJpaRepository.existsById(id);
+  }
+
+  @Override
+  public Boolean existsByNickname(String nickname) {
+    return userJpaRepository.existsByNickname(nickname);
+  }
+
+  @Override
+  public Optional<User> findById(Long userId) {
+    return userJpaRepository.findById(userId);
   }
 }
