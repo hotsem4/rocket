@@ -5,6 +5,7 @@ import com.rocket.domains.posts.application.dto.request.PostCreateRequest;
 import com.rocket.domains.posts.application.dto.request.PostUpdateRequest;
 import com.rocket.domains.posts.application.dto.response.PostDetailInfoResponse;
 import com.rocket.domains.posts.application.dto.response.PostListResponse;
+import com.rocket.domains.posts.application.service.PostLikeService;
 import com.rocket.domains.posts.domain.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,8 +28,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostController {
 
   private final PostService postService;
+  private final PostLikeService postLikeService;
 
-  public PostController(PostService postService) {
+  public PostController(PostService postService, PostLikeService postLikeService) {
+    this.postLikeService = postLikeService;
     this.postService = postService;
   }
 
@@ -75,10 +78,13 @@ public class PostController {
     }
   }
 
-  @PutMapping("/{id}/like")
+  @PutMapping("/{postId}/like")
   @Operation(summary = "게시글 좋아요 증가", description = "게시글 ID를 기반으로 좋아요 수를 1 증가시킵니다.")
-  public ResponseEntity<PostDetailInfoResponse> likeCountIncrement(@PathVariable Long id) {
-    PostDetailInfoResponse updatedPost = postService.likeCountIncrement(id);
-    return ResponseEntity.ok(updatedPost);
+  public ResponseEntity<PostDetailInfoResponse> likeCountIncrement(
+      @PathVariable Long postId,
+      @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+    postLikeService.likePost(postId, userDetails.getId());
+    return ResponseEntity.ok(postService.getPostDetailWithLikes(postId));
   }
 }
