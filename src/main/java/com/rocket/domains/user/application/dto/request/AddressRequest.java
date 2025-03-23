@@ -1,8 +1,8 @@
-package com.rocket.domains.user.application.dto.common;
+package com.rocket.domains.user.application.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record AddressDTO(
+public record AddressRequest(
     @NotBlank(message = "State 값이 비어 있을 수 없습니다.")
     String state,
 
@@ -14,4 +14,6 @@ public record AddressDTO(
 
     @NotBlank(message = "ZipCode 값이 비어 있을 수 없습니다.")
     String zipCode
-) {}
+) {
+
+}
