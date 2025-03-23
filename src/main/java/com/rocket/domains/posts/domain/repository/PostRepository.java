@@ -1,4 +1,4 @@
-package com.rocket.domains.posts.domain.enums.repository;
+package com.rocket.domains.posts.domain.repository;
 
 import com.rocket.domains.posts.domain.entity.Post;
 import java.util.List;
