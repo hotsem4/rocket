@@ -74,6 +74,10 @@ public class Post {
     this.content = content;
   }
 
+  public void addLikeCount(int additionalLikes) {
+    this.likeCount += additionalLikes;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (o == null || getClass() != o.getClass()) {

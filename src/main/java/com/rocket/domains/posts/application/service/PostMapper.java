@@ -10,6 +10,9 @@ import java.util.Objects;
 public class PostMapper {
 
   public static Post toEntity(PostCreateRequest dto, User author) {
+    if (author == null) {
+      throw new IllegalArgumentException("작성자 정보가 없습니다.");
+    }
     return Post.create(
         dto.title(),
         dto.content(),
@@ -17,8 +20,9 @@ public class PostMapper {
     );
   }
 
-  public static PostDetailInfoResponse toDetailDto(Post post) {
+  public static PostDetailInfoResponse toDetailDto(Post post, int redisLikeCount) {
     Objects.requireNonNull(post, "Post 객체는 null일 수 없습니다.");
+    int totalLikeCount = post.getLikeCount() + redisLikeCount;
     return new PostDetailInfoResponse(
         post.getId(),
         post.getTitle(),
@@ -26,7 +30,7 @@ public class PostMapper {
         post.getAuthor().getId(),
         post.getAuthor().getNickname(),
         post.getCreatedAt(),
-        post.getLikeCount()
+        totalLikeCount
     );
   }
 

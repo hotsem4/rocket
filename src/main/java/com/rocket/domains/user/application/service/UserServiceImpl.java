@@ -6,7 +6,8 @@ import com.rocket.domains.user.application.dto.request.UserRegisterRequest;
 import com.rocket.domains.user.application.dto.request.UserUpdateRequest;
 import com.rocket.domains.user.application.dto.response.UserInfoResponse;
 import com.rocket.domains.user.domain.entity.User;
-import com.rocket.domains.user.domain.repository.UserRepository;
+import com.rocket.domains.user.domain.repository.UserReader;
+import com.rocket.domains.user.domain.repository.UserWriter;
 import com.rocket.domains.user.domain.service.UserService;
 import java.util.List;
 import java.util.Optional;
@@ -17,11 +18,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserServiceImpl implements UserService {
 
-  private final UserRepository userRepository;
+  private final UserReader userReader;
+  private final UserWriter userWriter;
   private final PasswordEncoder passwordEncoder;
 
-  public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-    this.userRepository = userRepository;
+  public UserServiceImpl(UserReader userReader, UserWriter userWriter,
+      PasswordEncoder passwordEncoder) {
+    this.userReader = userReader;
+    this.userWriter = userWriter;
     this.passwordEncoder = passwordEncoder;
   }
 
@@ -31,7 +35,7 @@ public class UserServiceImpl implements UserService {
     String encodePassword = passwordEncoder.encode(dto.password());
 
     User user = UserMapper.toEntity(dto, encodePassword);
-    return userRepository.saveUser(user);
+    return userWriter.saveUser(user);
   }
 
   /**
@@ -47,7 +51,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User authenticate(String email, String rawPassword) {
-    Optional<User> userOptional = userRepository.findByEmail(email);
+    Optional<User> userOptional = userReader.findByEmail(email);
     if (userOptional.isEmpty()) {
       passwordEncoder.matches(rawPassword, "dummyPassword");
       throw new LoginFailedException("이메일 또는 비밀번호가 올바르지 않습니다.");
@@ -64,7 +68,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public UserInfoResponse findByEmail(String email) {
-    User user = userRepository.findByEmail(email)
+    User user = userReader.findByEmail(email)
         .orElseThrow(() -> new UserNotFoundException(email));
     return UserInfoResponse.fromUser(user);
   }
@@ -74,7 +78,7 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   public List<UserInfoResponse> findAllUsers() {
-    return userRepository.findAll()
+    return userReader.findAll()
         .stream()
         .map(UserInfoResponse::fromUser)
         .toList();
@@ -83,7 +87,7 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public UserInfoResponse updateByEmail(UserUpdateRequest dto) {
-    User user = userRepository.findByEmail(dto.email())
+    User user = userReader.findByEmail(dto.email())
         .orElseThrow(() -> new UserNotFoundException(dto.email()));
 
     boolean isUpdated = false;
@@ -114,11 +118,11 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public boolean deleteByEmail(String email) {
-    if (!userRepository.existsByEmail(email)) {
+    if (!userReader.existsByEmail(email)) {
       throw new UserNotFoundException(email);
     }
 
-    return userRepository.deleteUser(email);
+    return userWriter.deleteUser(email);
   }
 
 
