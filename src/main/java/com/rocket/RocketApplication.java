@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class RocketApplication {
 
   public static void main(String[] args) {
+    new com.rocket.utils.EnvLoader();
+
     SpringApplication.run(RocketApplication.class, args);
   }
 
