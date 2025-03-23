@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,7 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private final JwtProvider jwtProvider;
-  private final CustomUserDetailsService userDetailsService;
+  private final ObjectProvider<CustomUserDetailsService> userDetailsServiceProvider;
 
   @Override
   protected void doFilterInternal(
@@ -31,7 +32,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     if (token != null && jwtProvider.validateToken(token)) {
       String email = jwtProvider.getEmail(token);
-      UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+      UserDetails userDetails = userDetailsServiceProvider.getIfAvailable()
+          .loadUserByUsername(email);
       Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, "",
           userDetails.getAuthorities());
       SecurityContextHolder.getContext().setAuthentication(auth);
