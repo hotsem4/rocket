@@ -3,6 +3,7 @@ package com.rocket.config;
 import com.rocket.commons.security.JwtAuthenticationFilter;
 import com.rocket.commons.security.JwtProvider;
 import com.rocket.commons.security.service.CustomUserDetailsService;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,21 +18,21 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-  private final CustomUserDetailsService userDetailsService;
   private final JwtProvider jwtProvider;
 
-  public SecurityConfig(CustomUserDetailsService userDetailsService, JwtProvider jwtProvider) {
-    this.userDetailsService = userDetailsService;
+  public SecurityConfig(JwtProvider jwtProvider) {
     this.jwtProvider = jwtProvider;
   }
 
   @Bean
-  public JwtAuthenticationFilter jwtAuthenticationFilter() {
-    return new JwtAuthenticationFilter(jwtProvider, userDetailsService);
+  public JwtAuthenticationFilter jwtAuthenticationFilter(
+      ObjectProvider<CustomUserDetailsService> userDetailsServiceProvider) {
+    return new JwtAuthenticationFilter(jwtProvider, userDetailsServiceProvider);
   }
 
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+  public SecurityFilterChain securityFilterChain(HttpSecurity http,
+      ObjectProvider<CustomUserDetailsService> userDetailsServiceProvider) throws Exception {
     return http
         .csrf(AbstractHttpConfigurer::disable)
         .cors(AbstractHttpConfigurer::disable)
@@ -42,7 +43,8 @@ public class SecurityConfig {
             .requestMatchers("/auth/**").permitAll()
             .anyRequest().authenticated()
         )
-        .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(jwtAuthenticationFilter(userDetailsServiceProvider),
+            UsernamePasswordAuthenticationFilter.class)
         .build();
   }
 
