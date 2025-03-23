@@ -8,16 +8,14 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class PostLikeRedisService {
+
   private final StringRedisTemplate redisTemplate;
 
   private static final String POST_LIKE_COUNT_KEY_PREFIX = "post:like:";
   private static final Long LIKE_KEY_TTL_MINUTES = 30L;
 
-
   /**
-   * 좋아요 증가
-   * - Redis에 키가 없으면 초기화 후 증가 및 TTL 설정
-   * - 키가 있으면 INCR 후 TTL 갱신
+   * 좋아요 증가 - Redis에 키가 없으면 초기화 후 증가 및 TTL 설정 - 키가 있으면 INCR 후 TTL 갱신
    */
   public void incrementLikeCount(Long postId) {
     String key = POST_LIKE_COUNT_KEY_PREFIX + postId;
@@ -30,5 +28,22 @@ public class PostLikeRedisService {
     redisTemplate.opsForValue().increment(key);
     // TTL 갱신
     redisTemplate.expire(key, LIKE_KEY_TTL_MINUTES, TimeUnit.MINUTES);
+  }
+
+  /**
+   * Redis에서 현재 좋아요 조회
+   */
+  public int getLikeCount(Long postId) {
+    String key = POST_LIKE_COUNT_KEY_PREFIX + postId;
+    String count = redisTemplate.opsForValue().get(key);
+    return count != null ? Integer.parseInt(count) : 0;
+  }
+
+  /**
+   * Redis에서 좋아요 키 삭제
+   */
+  public void resetLikeCount(Long postId) {
+    String key = POST_LIKE_COUNT_KEY_PREFIX + postId;
+    redisTemplate.delete(key);
   }
 }
