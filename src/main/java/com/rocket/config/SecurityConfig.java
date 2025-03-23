@@ -1,5 +1,7 @@
-package com.rocket.commons.security;
+package com.rocket.config;
 
+import com.rocket.commons.security.JwtAuthenticationFilter;
+import com.rocket.commons.security.JwtProvider;
 import com.rocket.commons.security.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
