@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository {
+
   Post savePost(Post post);
 
   Optional<Post> findById(Long id);
@@ -16,9 +17,7 @@ public interface PostRepository {
   /**
    * API 기반이기 때문에 사용자 인터페이스에서 삭제버튼을 클릭하면 ID를 알 수 있을 것이다.
    */
-  Boolean deleteById(Long id);
-
-  Boolean updateById(Long id, String title, String content);
+  void deleteById(Long id);
 
   Boolean incrementLikeCount(Long id);
 }
