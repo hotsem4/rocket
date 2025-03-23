@@ -1,85 +1,69 @@
 package com.rocket.domains.posts.domain.entity;
 
+import com.rocket.domains.user.domain.entity.User;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.CreationTimestamp;
 
+@Getter
+@Entity
+@Table(name = "Post")
+@NoArgsConstructor
 public class Post {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  private final String title;
-  private final String content;
-  private final Long authorId;
+
+  @Column(name = "title", unique = true, nullable = false)
+  @Comment("게시글 제목")
+  private String title;
+
+  @Column(name = "content", unique = false, nullable = false)
+  @Comment("게시글 내용")
+  private String content;
+
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "author_id")
+  @Comment("작성자 ID (User 엔티티 참조)")
+  private User author;
+
+  @CreationTimestamp
+  @Column(nullable = false)
+  @Comment("생성일시")
   private LocalDateTime createdAt;
+
+  @Column(nullable = false)
+  @Comment("좋아요 수")
   private int likeCount = 0; // 기본값 0, 사용자 변경 불가능
 
+  public static Post create(String title, String content, User author) {
+    Post post = new Post();
+    post.title = title;
+    post.content = content;
+    post.author = author;
+    return post;
+  }
+
   // 조회 시 사용할 생성자 (id 포함)
-  public Post(Long id, String title, String content, Long authorId, LocalDateTime createdAt) {
+  public Post(Long id, String title, String content, LocalDateTime createdAt) {
     this.id = id;
     this.title = title;
     this.content = content;
-    this.authorId = authorId;
     this.createdAt = createdAt;
     this.likeCount = 0; // 항상 0으로 초기화
-  }
-
-  // 빌더 패턴 적용
-  private Post(Builder builder) {
-    this.title = builder.title;
-    this.content = builder.content;
-    this.authorId = builder.authorId;
-    this.likeCount = 0; // 항상 0으로 초기화
-  }
-
-
-  public Long getId() {
-    return id;
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public String getContent() {
-    return content;
-  }
-
-  public Long getAuthorId() {
-    return authorId;
-  }
-
-  public LocalDateTime getCreatedAt() {
-    return createdAt;
-  }
-
-  public int getLikeCount() {
-    return likeCount;
-  }
-
-  // 빌더 클래스 (likeCount 필드 없음)
-  public static class Builder {
-    private String title;
-    private String content;
-    private Long authorId;
-
-    public Builder() {}
-
-    public Builder title(String title) {
-      this.title = title;
-      return this;
-    }
-
-    public Builder content(String content) {
-      this.content = content;
-      return this;
-    }
-
-    public Builder authorId(Long authorId) {
-      this.authorId = authorId;
-      return this;
-    }
-
-    public Post build() {
-      return new Post(this);
-    }
   }
 
   @Override
@@ -88,16 +72,14 @@ public class Post {
       return false;
     }
     Post post = (Post) o;
-    return likeCount == post.likeCount &&
-        Objects.equals(id, post.id) &&
-        Objects.equals(title, post.title) &&
-        Objects.equals(content, post.content) &&
-        Objects.equals(authorId, post.authorId) &&
-        Objects.equals(createdAt, post.createdAt);
+    return likeCount == post.likeCount && Objects.equals(id, post.id)
+        && Objects.equals(title, post.title) && Objects.equals(content,
+        post.content) && Objects.equals(author, post.author) && Objects.equals(
+        createdAt, post.createdAt);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, title, content, authorId, createdAt, likeCount);
+    return Objects.hash(id, title, content, author, createdAt, likeCount);
   }
 }
