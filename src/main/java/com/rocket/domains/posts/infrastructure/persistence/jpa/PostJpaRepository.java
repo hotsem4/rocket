@@ -14,7 +14,5 @@ public interface PostJpaRepository extends JpaRepository<Post, Long> {
   // 유저의 ID로 조회하기(paginatino을 위해 별도 생성)
   List<Post> findAllByAuthorId(Long userId);
 
-  Boolean incrementLikeCount(Long postId);
-
   void deleteById(@NonNull Long postId);
 }
