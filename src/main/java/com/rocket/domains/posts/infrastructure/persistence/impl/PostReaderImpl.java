@@ -1,7 +1,7 @@
 package com.rocket.domains.posts.infrastructure.persistence.impl;
 
 import com.rocket.domains.posts.domain.entity.Post;
-import com.rocket.domains.posts.domain.repository.PostRepository;
+import com.rocket.domains.posts.domain.repository.PostReader;
 import com.rocket.domains.posts.infrastructure.persistence.jpa.PostJpaRepository;
 import java.util.List;
 import java.util.Optional;
@@ -10,15 +10,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class PostJpaRepositoryImpl implements PostRepository {
+public class PostReaderImpl implements PostReader {
 
   private final PostJpaRepository postJpaRepository;
-
-  @Override
-  public Post savePost(Post post) {
-    postJpaRepository.save(post);
-    return post;
-  }
 
   @Override
   public Optional<Post> findById(Long id) {
@@ -36,13 +30,7 @@ public class PostJpaRepositoryImpl implements PostRepository {
   }
 
   @Override
-  public void deleteById(Long id) {
-    postJpaRepository.deleteById(id);
-  }
-
-  @Override
-  public Boolean incrementLikeCount(Long id) {
-    // TODO Redis를 이용한 구현
-    return null;
+  public boolean existsById(Long id) {
+    return postJpaRepository.existsById(id);
   }
 }
