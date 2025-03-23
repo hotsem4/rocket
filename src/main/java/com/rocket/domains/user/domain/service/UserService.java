@@ -1,24 +1,26 @@
 package com.rocket.domains.user.domain.service;
 
-import com.rocket.domains.user.application.dto.response.UserDTO;
-import com.rocket.domains.user.application.dto.request.UserRegisterDTO;
-import com.rocket.domains.user.application.dto.request.UserUpdateDTO;
-
+import com.rocket.domains.user.application.dto.request.UserRegisterRequest;
+import com.rocket.domains.user.application.dto.request.UserUpdateRequest;
+import com.rocket.domains.user.application.dto.response.UserInfoResponse;
 import com.rocket.domains.user.domain.entity.User;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface UserService {
-  User saveUser(UserRegisterDTO dto);
 
-  UserDTO findByEmail(String email);
+  User saveUser(UserRegisterRequest dto);
 
-  List<UserDTO> findAllUsers();
+  UserInfoResponse loginUser(String email, String password);
 
-  UserDTO updateByEmail(UserUpdateDTO dto);
+  UserInfoResponse findByEmail(String email);
+
+  List<UserInfoResponse> findAllUsers();
+
+  UserInfoResponse updateByEmail(UserUpdateRequest dto);
 
   boolean deleteByEmail(String email);
 
-  Boolean authenticate(String email, String rawPassword);
+  User authenticate(String email, String rawPassword);
 }

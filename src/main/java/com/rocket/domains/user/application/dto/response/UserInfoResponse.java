@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-public record UserDTO(
+public record UserInfoResponse(
     @NotNull(message = "ID는 필수이며, 0보다 커야 합니다.")
     @Positive(message = "ID는 필수이며, 0보다 커야 합니다.")
     Long id,
@@ -18,6 +18,9 @@ public record UserDTO(
     @NotBlank(message = "이메일 값이 비어 있을 수 없습니다.")
     @Email(message = "올바른 이메일 형식이 아닙니다.")
     String email,
+
+    @NotBlank(message = "닉네임은 비어 있을 수 없습니다.")
+    String nickname,
 
     @Min(value = 0, message = "나이는 음수일 수 없습니다.")
     int age,
@@ -29,10 +32,12 @@ public record UserDTO(
     @Valid
     Address address
 ) {
-  public static UserDTO fromUser(User user) {
-    return new UserDTO(
+
+  public static UserInfoResponse fromUser(User user) {
+    return new UserInfoResponse(
         user.getId(),
         user.getEmail(),
+        user.getNickname(),
         user.getAge(),
         user.getGender(),
         user.getAddress()
