@@ -26,11 +26,6 @@ public class PostServiceImpl implements PostService {
   private final UserLookupService userLookupService;
   private final UserRepository userRepository;
 
-//  public PostServiceImpl(PostRepository postRepository, UserLookupService userLookupService) {
-//    this.postRepository = postRepository;
-//    this.userLookupService = userLookupService;
-//  }
-
   @Override
   @Transactional
   public PostDetailInfoResponse savePost(PostCreateRequest dto, Long userId) {
@@ -80,24 +75,25 @@ public class PostServiceImpl implements PostService {
       throw new IllegalArgumentException("변경할 값이 없습니다.");
     }
 
-    boolean isUpdated = postRepository.updateById(id, dto.title(), dto.content());
+    Post post = postRepository.findById(id)
+        .orElseThrow(() -> new PostNotFoundException(String.valueOf(id)));
 
-    if (!isUpdated) {
-      throw new IllegalArgumentException("게시글이 존재하지 않거나 업데이트할 수 없습니다.");
+    if (dto.title() != null) {
+      post.updateTitle(dto.title());
+    }
+    if (dto.content() != null) {
+      post.updateContent(dto.content());
     }
 
-    Post findByIdPost = postRepository.findById(id)
-        .orElseThrow(() -> new IllegalArgumentException("데이터를 찾을 수 없습니다."));
-    return PostMapper.toDetailDto(findByIdPost);
+    return PostMapper.toDetailDto(post);
   }
 
   @Override
   public Boolean deleteById(Long id) {
-    boolean isDeleted = postRepository.deleteById(id);
+    Post post = postRepository.findById(id)
+        .orElseThrow(() -> new PostNotFoundException(String.valueOf(id)));
 
-    if (!isDeleted) {
-      throw new IllegalArgumentException("해당 ID의 게시글을 찾을 수 없습니다.");
-    }
+    postRepository.deleteById(id);
 
     return true;
   }
