@@ -1,12 +1,13 @@
 package com.rocket.domains.posts.application.dto.response;
 
-import com.rocket.domains.posts.domain.entity.Post;
-import jakarta.validation.constraints.*;
-
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
-public record PostInfoDTO(
+public record PostDetailInfoResponse(
     @NotNull(message = "게시글 ID는 필수입니다.")
     @Positive(message = "게시글 ID는 0보다 커야 합니다.")
     Long id,
@@ -23,22 +24,14 @@ public record PostInfoDTO(
     @Positive(message = "작성자 ID는 0보다 커야 합니다.")
     Long authorId,
 
+    @NotBlank(message = "닉네임은 비어 있을 수 없습니다.")
+    String nickname,
+
     @NotNull(message = "게시글 생성 시간은 필수 입력값입니다.")
     LocalDateTime createdAt,
 
     @Min(value = 0, message = "좋아요 수는 0 이상이어야 합니다.")
     int likeCount
 ) {
-  // Post → PostInfoDTO 변환 메서드
-  public static PostInfoDTO from(Post post) {
-    Objects.requireNonNull(post, "Post 객체는 null일 수 없습니다.");
-    return new PostInfoDTO(
-        post.getId(),
-        post.getTitle(),
-        post.getContent(),
-        post.getAuthorId(),
-        post.getCreatedAt(),
-        post.getLikeCount()
-    );
-  }
+
 }
