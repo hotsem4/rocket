@@ -17,7 +17,8 @@ import com.rocket.domains.user.application.dto.response.UserInfoResponse;
 import com.rocket.domains.user.domain.entity.Address;
 import com.rocket.domains.user.domain.entity.User;
 import com.rocket.domains.user.domain.enums.Gender;
-import com.rocket.domains.user.domain.repository.UserRepository;
+import com.rocket.domains.user.domain.repository.UserReader;
+import com.rocket.domains.user.domain.repository.UserWriter;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +32,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 class UserServiceImplTest {
 
   @Mock
-  private UserRepository userRepository;
+  private UserReader userReader;
+
+  @Mock
+  private UserWriter userWriter;
 
   @Mock
   private PasswordEncoder passwordEncoder;
@@ -83,7 +87,7 @@ class UserServiceImplTest {
   @Test
   void saveUser_success() {
     // Given: Repository가 정상적으로 저장된 User를 반환한다고 가정
-    when(userRepository.saveUser(any(User.class))).thenReturn(user);
+    when(userWriter.saveUser(any(User.class))).thenReturn(user);
 
     // When
     User result = userService.saveUser(userRegisterRequest);
@@ -91,14 +95,14 @@ class UserServiceImplTest {
     // Then: 반환된 User 객체가 null이 아니고 이메일이 일치하는지 검증
     assertThat(result).isNotNull();
     assertThat(result.getEmail()).isEqualTo("test@example.com");
-    verify(userRepository, times(1)).saveUser(any(User.class));
+    verify(userWriter, times(1)).saveUser(any(User.class));
   }
 
   @DisplayName("User 조회 by email - 성공")
   @Test
   void findByEmail_success() {
     // Given
-    when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(user));
+    when(userReader.findByEmail(anyString())).thenReturn(Optional.of(user));
 
     // When
     UserInfoResponse result = userService.findByEmail("test@example.com");
@@ -106,14 +110,14 @@ class UserServiceImplTest {
     // Then
     assertThat(result).isNotNull();
     assertThat(result.email()).isEqualTo("test@example.com");
-    verify(userRepository, times(1)).findByEmail(anyString());
+    verify(userReader, times(1)).findByEmail(anyString());
   }
 
   @DisplayName("User 조회 by email - 실패 (사용자 없음)")
   @Test
   void findByEmail_fail_notFound() {
     // Given
-    when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+    when(userReader.findByEmail(anyString())).thenReturn(Optional.empty());
 
     // When & Then
     assertThatThrownBy(() -> userService.findByEmail("nonexistent@example.com"))
@@ -125,7 +129,7 @@ class UserServiceImplTest {
   @Test
   void findAllUsers_success() {
     // Given
-    when(userRepository.findAll()).thenReturn(List.of(user));
+    when(userReader.findAll()).thenReturn(List.of(user));
 
     // When
     List<UserInfoResponse> result = userService.findAllUsers();
@@ -133,19 +137,19 @@ class UserServiceImplTest {
     // Then
     assertThat(result).isNotEmpty();
     assertThat(result).hasSize(1);
-    verify(userRepository, times(1)).findAll();
+    verify(userReader, times(1)).findAll();
   }
 
   @DisplayName("User 수정 by email - 성공")
   @Test
   void updateByEmail_success() {
     // Given: 존재하는 사용자, 업데이트 후 조회 시 수정된 User 객체 반환
-    when(userRepository.findByEmail(anyString())).thenReturn(Optional.ofNullable(user));
+    when(userReader.findByEmail(anyString())).thenReturn(Optional.ofNullable(user));
 
     Address updatedAddress = new Address("State", "City", "NewStreet", "Zip");
     User updatedUser = createWithIdForTest(1L, "test@example.com", "password", 35, Gender.FEMALE,
         updatedAddress, "Toni");
-    when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(updatedUser));
+    when(userReader.findByEmail(anyString())).thenReturn(Optional.of(updatedUser));
 
     // When
     UserInfoResponse result = userService.updateByEmail(userUpdateRequest);
@@ -162,7 +166,7 @@ class UserServiceImplTest {
   void updateByEmail_fail_noUpdateFields() {
     // Given: 업데이트할 필드가 모두 null인 경우
     UserUpdateRequest updateDTO = new UserUpdateRequest("test@example.com", null, null, null, null);
-    when(userRepository.findByEmail(anyString())).thenReturn(Optional.ofNullable(user));
+    when(userReader.findByEmail(anyString())).thenReturn(Optional.ofNullable(user));
 
     // When & Then: 변경할 내용이 없으면 예외 발생
     assertThatThrownBy(() -> userService.updateByEmail(updateDTO))
@@ -174,7 +178,7 @@ class UserServiceImplTest {
   @Test
   void updateByEmail_fail_userNotFound() {
     // Given: 존재하지 않는 사용자
-    when(userRepository.existsByEmail(anyString())).thenReturn(false);
+    when(userReader.existsByEmail(anyString())).thenReturn(false);
 
     // When & Then
     assertThatThrownBy(() -> userService.updateByEmail(userUpdateRequest))
@@ -186,23 +190,23 @@ class UserServiceImplTest {
   @Test
   void deleteByEmail_success() {
     // Given
-    when(userRepository.existsByEmail(anyString())).thenReturn(true);
-    when(userRepository.deleteUser(anyString())).thenReturn(true);
+    when(userReader.existsByEmail(anyString())).thenReturn(true);
+    when(userWriter.deleteUser(anyString())).thenReturn(true);
 
     // When
     boolean result = userService.deleteByEmail("test@example.com");
 
     // Then
     assertThat(result).isTrue();
-    verify(userRepository, times(1)).existsByEmail(anyString());
-    verify(userRepository, times(1)).deleteUser(anyString());
+    verify(userReader, times(1)).existsByEmail(anyString());
+    verify(userWriter, times(1)).deleteUser(anyString());
   }
 
   @DisplayName("User 삭제 by email - 실패 (사용자 없음)")
   @Test
   void deleteByEmail_fail_notFound() {
     // Given
-    when(userRepository.existsByEmail(anyString())).thenReturn(false);
+    when(userReader.existsByEmail(anyString())).thenReturn(false);
 
     // When & Then
     assertThatThrownBy(() -> userService.deleteByEmail("nonexistent@example.com"))

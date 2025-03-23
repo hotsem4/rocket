@@ -1,20 +1,27 @@
 package com.rocket.domains.user.application.service;
 
-import com.rocket.domains.user.domain.repository.UserRepository;
+import com.rocket.domains.user.domain.entity.User;
+import com.rocket.domains.user.domain.repository.UserReader;
 import com.rocket.domains.user.domain.service.UserLookupService;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserLookupServiceImpl implements UserLookupService {
 
-  private final UserRepository userRepository;
+  private final UserReader userReader;
 
-  public UserLookupServiceImpl(UserRepository userRepository) {
-    this.userRepository = userRepository;
+  public UserLookupServiceImpl(UserReader userReader) {
+    this.userReader = userReader;
   }
 
   @Override
-  public boolean existsById(Long id) {
-    return userRepository.existsById(id);
+  public Boolean existsById(Long id) {
+    return userReader.existsById(id);
+  }
+
+  @Override
+  public Optional<User> findById(Long id) {
+    return userReader.findById(id);
   }
 }

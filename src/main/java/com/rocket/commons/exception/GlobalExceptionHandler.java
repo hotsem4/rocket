@@ -1,5 +1,6 @@
 package com.rocket.commons.exception;
 
+import com.rocket.commons.exception.exceptions.DuplicateLikeException;
 import com.rocket.commons.exception.exceptions.LoginFailedException;
 import com.rocket.commons.exception.exceptions.PostNotFoundException;
 import com.rocket.commons.exception.exceptions.UserNotFoundException;
@@ -32,6 +33,14 @@ public class GlobalExceptionHandler {
       HttpServletRequest request) {
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
         .body(ErrorResponse.of(401, "인증이 실패하였습니다.", ex.getMessage(), request.getRequestURI()));
+  }
+
+  @ExceptionHandler(DuplicateLikeException.class)
+  public ResponseEntity<ErrorResponse> handleDuplicateLike(DuplicateLikeException ex,
+      HttpServletRequest request) {
+    return ResponseEntity.status(HttpStatus.CONFLICT)
+        .body(
+            ErrorResponse.of(409, "이미 좋아요를 누른 게시글입니다.", ex.getMessage(), request.getRequestURI()));
   }
 
   @ExceptionHandler(Exception.class)
