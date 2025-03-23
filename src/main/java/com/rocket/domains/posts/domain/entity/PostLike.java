@@ -1,20 +1,17 @@
 package com.rocket.domains.posts.domain.entity;
 
-import com.rocket.domains.user.domain.entity.User;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="post_like", uniqueConstraints = {
+@Table(name = "PostLike", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"post_id", "user_id"})
 })
 @Getter
@@ -25,16 +22,15 @@ public class PostLike {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @ManyToOne(fetch = FetchType.EAGER, optional = false)
-  @JoinColumn(name = "post_id")
-  private Post post;
 
-  @ManyToOne(fetch = FetchType.EAGER, optional = false)
-  @JoinColumn(name = "user_id")
-  private User user;
+  @Column(name = "post_id", nullable = false)
+  private Long postId;  // ← 여기서 직접 FK(ID)만 저장
 
-  public PostLike(Post post, User user) {
-    this.post = post;
-    this.user = user;
+  @Column(name = "user_id", nullable = false)
+  private Long userId;  // ← User 객체 대신 userId만
+
+  public PostLike(Long postId, Long userId) {
+    this.postId = postId;
+    this.userId = userId;
   }
 }
