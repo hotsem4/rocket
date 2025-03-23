@@ -4,6 +4,7 @@ import com.rocket.domains.posts.application.dto.request.PostCreateRequest;
 import com.rocket.domains.posts.application.dto.request.PostUpdateRequest;
 import com.rocket.domains.posts.application.dto.response.PostDetailInfoResponse;
 import com.rocket.domains.posts.application.dto.response.PostListResponse;
+import com.rocket.domains.posts.domain.entity.Post;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -22,5 +23,8 @@ public interface PostService {
 
   PostDetailInfoResponse findById(Long id);
 
-  PostDetailInfoResponse likeCountIncrement(Long id);
+  Post findEntityById(Long id);
+
+  PostDetailInfoResponse getPostDetailWithLikes(Long postId);
+
 }
