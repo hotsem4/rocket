@@ -1,9 +1,7 @@
 package com.rocket.domains.user.domain.entity;
 
-import com.rocket.domains.posts.domain.entity.Post;
 import com.rocket.domains.user.application.dto.request.AddressRequest;
 import com.rocket.domains.user.domain.enums.Gender;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -12,7 +10,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -20,8 +17,6 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -74,9 +69,6 @@ public class User {
   @NotNull(message = "주소는 필수 입력값입니다.")
   @Embedded
   private Address address;
-
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  List<Post> posts = new ArrayList<>();
 
   private User(String email, String password, int age, Gender gender, Address address,
       String nickname) {
