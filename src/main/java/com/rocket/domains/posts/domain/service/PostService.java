@@ -1,24 +1,26 @@
 package com.rocket.domains.posts.domain.service;
 
-import com.rocket.domains.posts.application.dto.common.PostDTO;
-import com.rocket.domains.posts.application.dto.request.PostUpdateDTO;
-import com.rocket.domains.posts.application.dto.response.PostInfoDTO;
+import com.rocket.domains.posts.application.dto.request.PostCreateRequest;
+import com.rocket.domains.posts.application.dto.request.PostUpdateRequest;
+import com.rocket.domains.posts.application.dto.response.PostDetailInfoResponse;
+import com.rocket.domains.posts.application.dto.response.PostListResponse;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface PostService {
-  PostInfoDTO savePost(PostDTO post);
 
-  List<PostDTO> findByTitle(String title);
+  PostDetailInfoResponse savePost(PostCreateRequest dto, Long userId);
 
-  List<PostDTO> findAllPosts();
+  List<PostListResponse> findByTitle(String title);
 
-  PostInfoDTO updateById(Long id, PostUpdateDTO dto);
+  List<PostListResponse> findAllPosts();
 
-  boolean deleteById(Long id);
+  PostDetailInfoResponse updateById(Long id, PostUpdateRequest dto);
 
-  PostInfoDTO findById(Long id);
+  Boolean deleteById(Long id);
 
-  PostInfoDTO likeCountIncrement(Long id);
+  PostDetailInfoResponse findById(Long id);
+
+  PostDetailInfoResponse likeCountIncrement(Long id);
 }
