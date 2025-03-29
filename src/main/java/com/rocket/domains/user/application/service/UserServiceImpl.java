@@ -1,6 +1,5 @@
 package com.rocket.domains.user.application.service;
 
-import com.rocket.commons.exception.exceptions.LoginFailedException;
 import com.rocket.commons.exception.exceptions.UserNotFoundException;
 import com.rocket.domains.user.application.dto.request.UserRegisterRequest;
 import com.rocket.domains.user.application.dto.request.UserUpdateRequest;
@@ -38,34 +37,6 @@ public class UserServiceImpl implements UserService {
     return userWriter.saveUser(user);
   }
 
-  /**
-   * Todo
-   * JWT 토큰 발급 기능 추가 예정
-   */
-  @Override
-  public UserInfoResponse loginUser(String email, String password) {
-
-    User authenticatedUser = authenticate(email, password);
-    return UserInfoResponse.fromUser(authenticatedUser);
-  }
-
-  @Override
-  public User authenticate(String email, String rawPassword) {
-    Optional<User> userOptional = userReader.findByEmail(email);
-    if (userOptional.isEmpty()) {
-      passwordEncoder.matches(rawPassword, "dummyPassword");
-      throw new LoginFailedException("이메일 또는 비밀번호가 올바르지 않습니다.");
-    }
-
-    User user = userOptional.get();
-
-    if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
-      throw new LoginFailedException("이메일 또는 비밀번호가 올바르지 않습니다.");
-    }
-
-    return user;
-  }
-
   @Override
   public UserInfoResponse findByEmail(String email) {
     User user = userReader.findByEmail(email)
@@ -73,9 +44,6 @@ public class UserServiceImpl implements UserService {
     return UserInfoResponse.fromUser(user);
   }
 
-  /**
-   * JdbcTemplate를 사용할 경우 paging기법과 offset을 사용해서 OOM을 방지해야 하지만 시간 관계상 구현하지 않음...
-   */
   @Override
   public List<UserInfoResponse> findAllUsers() {
     return userReader.findAll()
@@ -125,5 +93,14 @@ public class UserServiceImpl implements UserService {
     return userWriter.deleteUser(email);
   }
 
+  @Override
+  public Optional<User> findUserByEmail(String email) {
+    return userReader.findByEmail(email);
+  }
+
+  @Override
+  public Boolean existsByEmail(String email) {
+    return userReader.existsByEmail(email);
+  }
 
 }

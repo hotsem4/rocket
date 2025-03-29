@@ -41,7 +41,7 @@ public class PostController {
       @Valid @RequestBody PostCreateRequest dto,
       @AuthenticationPrincipal CustomUserDetails userDetails
   ) {
-    PostDetailInfoResponse savedPost = postService.savePost(dto, userDetails.getId());
+    PostDetailInfoResponse savedPost = postService.savePost(dto, userDetails.id());
     return ResponseEntity.ok(savedPost);
   }
 
@@ -84,7 +84,7 @@ public class PostController {
       @PathVariable Long postId,
       @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-    postLikeService.likePost(postId, userDetails.getId());
+    postLikeService.likePost(postId, userDetails.id());
     return ResponseEntity.ok(postService.getPostDetailWithLikes(postId));
   }
 }
