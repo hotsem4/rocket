@@ -21,4 +21,5 @@ public record CustomUserDetails(Long id, String email, String password) implemen
   public String getUsername() {
     return email;
   }
+
 }
