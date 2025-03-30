@@ -19,7 +19,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private final JwtProvider jwtProvider;
   private final JwtResolver jwtResolver;
-  //  private final CustomUserDetailsService userDetailsService;
   private final AuthenticationManager authenticationManager;
   private final RefreshTokenStore redis;
 
