@@ -24,10 +24,16 @@ public class JwtProvider {
   }
 
   public String createAccessToken(String email) {
+    if (isInvalidToken(email)) {
+      return null;
+    }
     return createToken(email, accessTokenValidTime, "access");
   }
 
   public String createRefreshToken(String email) {
+    if (isInvalidToken(email)) {
+      return null;
+    }
     return createToken(email, refreshTokenValidTime, "refresh");
   }
 
@@ -46,6 +52,9 @@ public class JwtProvider {
   }
 
   public Boolean isRefreshTokenValid(String token) {
+    if (isInvalidToken(token)) {
+      return false;
+    }
     try {
       String type = Jwts.parser()
           .verifyWith(secretKey)
@@ -60,6 +69,9 @@ public class JwtProvider {
   }
 
   public Boolean isAccessTokenValid(String token) {
+    if (isInvalidToken(token)) {
+      return false;
+    }
     try {
       String type = Jwts.parser()
           .verifyWith(secretKey)
@@ -74,6 +86,9 @@ public class JwtProvider {
   }
 
   public boolean isExpired(String token) {
+    if (isInvalidToken(token)) {
+      return false;
+    }
     try {
       Jwts.parser()
           .verifyWith(secretKey)
@@ -92,18 +107,29 @@ public class JwtProvider {
    * 토큰에서 이메일(subject) 추출
    */
   public String getEmail(String token) {
-    return Jwts.parser()
-        .verifyWith(secretKey)
-        .build()
-        .parseSignedClaims(token)
-        .getPayload()
-        .get("sub", String.class);
+    if (isInvalidToken(token)) {
+      return null;
+    }
+    try {
+      return Jwts.parser()
+          .verifyWith(secretKey)
+          .build()
+          .parseSignedClaims(token)
+          .getPayload()
+          .get("sub", String.class);
+    } catch (JwtException e) {
+      return null;
+    }
+
   }
 
   /**
    * 토큰 유효성 검사
    */
   public boolean validateToken(String token) {
+    if (isInvalidToken(token)) {
+      return false;
+    }
     try {
       Jwts.parser()
           .verifyWith(secretKey)
@@ -113,6 +139,10 @@ public class JwtProvider {
     } catch (JwtException | IllegalArgumentException e) {
       return false;
     }
+  }
+
+  private boolean isInvalidToken(String token) {
+    return token == null || token.isBlank();
   }
 
 
