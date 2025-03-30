@@ -1,6 +1,7 @@
 package com.rocket.domains.auth.application.service;
 
 import com.rocket.commons.exception.exceptions.DuplicateEmailException;
+import com.rocket.commons.exception.exceptions.InvalidEmailFormatException;
 import com.rocket.commons.exception.exceptions.InvalidTokenException;
 import com.rocket.commons.exception.exceptions.LoginFailedException;
 import com.rocket.commons.security.JwtProvider;
@@ -152,6 +153,9 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public void existsByEmail(String email) {
+    if (!email.matches("^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,6}$")) {
+      throw new InvalidEmailFormatException(email);
+    }
     if (userFacade.existsByEmail(email)) { // true -> 중복으로 예외 처리
       throw new DuplicateEmailException(email);
     }
