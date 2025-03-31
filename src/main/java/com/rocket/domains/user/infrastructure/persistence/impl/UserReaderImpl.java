@@ -1,5 +1,6 @@
 package com.rocket.domains.user.infrastructure.persistence.impl;
 
+import com.rocket.commons.exception.exceptions.UserNotFoundException;
 import com.rocket.domains.user.domain.entity.User;
 import com.rocket.domains.user.domain.repository.UserReader;
 import com.rocket.domains.user.infrastructure.persistence.jpa.UserJpaRepository;
@@ -44,5 +45,11 @@ public class UserReaderImpl implements UserReader {
   @Override
   public List<User> findAll() {
     return userJpaRepository.findAll();
+  }
+
+  @Override
+  public Long findUserIdByEmailAndPhoneNumber(String email, String phoneNumber) {
+    return userJpaRepository.findUserIdByEmailAndPhoneNumber(email, phoneNumber)
+        .orElseThrow(() -> new UserNotFoundException(email));
   }
 }
