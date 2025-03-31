@@ -2,6 +2,7 @@ package com.rocket.domains.user.domain.entity;
 
 import com.rocket.domains.user.application.dto.request.AddressRequest;
 import com.rocket.domains.user.domain.enums.Gender;
+import io.micrometer.core.instrument.step.StepRegistryConfig;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -41,7 +42,7 @@ public class User {
   private String email;
 
   @NotBlank(message = "비밀번호는 필수 입력값입니다.")
-  @Size(min = 6, message = "비밀번호는 최소 6자 이상이어야 합니다.")
+  @Size(min = 10, message = "비밀번호는 최소 10자 이상이어야 합니다.")
   @Column(name = "password", nullable = false)
   @Comment("비밀번호")
   private String password;
@@ -70,22 +71,27 @@ public class User {
   @Embedded
   private Address address;
 
+  @NotNull(message = "전화번호는 필수 입력값입니다.")
+  @NotBlank
+  private String phoneNumber;
+
   private User(String email, String password, int age, Gender gender, Address address,
-      String nickname) {
+      String nickname, String phoneNumber) {
     this.email = email;
     this.password = password;
     this.age = age;
     this.gender = gender;
     this.address = address;
     this.nickname = nickname;
+    this.phoneNumber = phoneNumber;
   }
 
   // @VisibleForTesting
   public static User createWithIdForTest(
       Long id, String email, String password, int age, Gender gender, Address address,
-      String nickname
+      String nickname, String phoneNumber
   ) {
-    User user = new User(email, password, age, gender, address, nickname);
+    User user = new User(email, password, age, gender, address, nickname, phoneNumber);
     user.id = id;
     return user;
   }
@@ -98,9 +104,10 @@ public class User {
       @Min(0) int age,
       @NotNull Gender gender,
       @Valid @NotNull Address address,
-      @NotBlank String nickname
+      @NotBlank String nickname,
+      @NotBlank String phoneNumber
   ) {
-    return new User(email, password, age, gender, address, nickname);
+    return new User(email, password, age, gender, address, nickname, phoneNumber);
   }
 
 
@@ -113,12 +120,12 @@ public class User {
     return age == user.age && Objects.equals(id, user.id) && Objects.equals(email,
         user.email) && Objects.equals(password, user.password) && Objects.equals(
         nickname, user.nickname) && gender == user.gender && Objects.equals(address,
-        user.address);
+        user.address) && Objects.equals(phoneNumber, user.phoneNumber);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, email, password, nickname, age, gender, address);
+    return Objects.hash(id, email, password, nickname, age, gender, address, phoneNumber);
   }
 
   public void updateNickname(String newNickname) {
@@ -128,11 +135,25 @@ public class User {
     this.nickname = newNickname;
   }
 
+  public void updatePassword(String newPassword) {
+    if (newPassword == null || newPassword.length() < 6) {
+      throw new IllegalArgumentException("비밀번호 형식이 올바르지 않습니다.");
+    }
+    this.password = newPassword;
+  }
+
   public void updateAge(Integer age) {
     if (age < 0) {
       throw new IllegalArgumentException("나이는 음수일 수 없습니다.");
     }
     this.age = age;
+  }
+
+  public void updatePhoneNumber(String newPhoneNumber) {
+    if (newPhoneNumber == null) {
+      throw new IllegalArgumentException("전화번호는 null일 수 없습니다.");
+    }
+    this.phoneNumber = newPhoneNumber;
   }
 
   public void updateGender(Gender gender) {
