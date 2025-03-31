@@ -103,4 +103,15 @@ public class UserServiceImpl implements UserService {
     return userReader.existsByEmail(email);
   }
 
+
+  @Override
+  public Optional<User> findUserById(Long userId) {
+    return userReader.findById(userId);
+  }
+
+  @Override
+  public Long findUserIdByEmailAndPhoneNumber(String email, String phoneNumber) {
+    return userReader.findUserIdByEmailAndPhoneNumber(email, phoneNumber);
+  }
+
 }

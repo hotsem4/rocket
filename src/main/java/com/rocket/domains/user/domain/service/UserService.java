@@ -24,4 +24,10 @@ public interface UserService {
   Optional<User> findUserByEmail(String email);
 
   Boolean existsByEmail(String email);
+
+
+  Optional<User> findUserById(Long userId);
+
+  Long findUserIdByEmailAndPhoneNumber(String email, String phoneNumber);
+
 }

@@ -17,4 +17,6 @@ public interface UserReader {
   Boolean existsByNickname(String nickname);
 
   List<User> findAll();
+
+  Long findUserIdByEmailAndPhoneNumber(String email, String phoneNumber);
 }

@@ -28,7 +28,10 @@ public record UserRegisterRequest(
 
     @NotBlank(message = "닉네임은 필수 입력값입니다.")
     @Size(max = 30, message = "닉네임은 최대 30자까지 입력 가능합니다.")
-    String nickname
+    String nickname,
+
+    @NotBlank(message = "전화번호는 필수입니다.")
+    String phoneNumber
 ) {
 
 }

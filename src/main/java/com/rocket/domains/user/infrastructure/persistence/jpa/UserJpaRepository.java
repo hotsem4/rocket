@@ -72,4 +72,9 @@ public interface UserJpaRepository extends JpaRepository<User, Long> {
 
   Boolean existsByNickname(
       @NotBlank(message = "닉네임은 필수 입력값입니다.") @Size(max = 30, message = "닉네임은 최대 30자까지 입력 가능합니다.") String nickname);
+
+  Optional<Long> findUserIdByEmailAndPhoneNumber(
+      @NotBlank(message = "이메일은 필수 입력값입니다.") @Email(message = "올바른 이메일 형식이 아닙니다.") String email,
+      @NotNull(message = "전화번호는 필수 입력값입니다.") @NotBlank String phoneNumber);
+
 }

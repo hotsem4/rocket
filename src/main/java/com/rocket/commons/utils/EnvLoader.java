@@ -1,4 +1,4 @@
-package com.rocket.utils;
+package com.rocket.commons.utils;
 
 import java.io.IOException;
 import java.nio.file.Files;
