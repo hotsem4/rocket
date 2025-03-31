@@ -15,7 +15,8 @@ public class UserMapper {
         Integer.parseInt(dto.age()),
         dto.gender(),
         toAddress(dto.address()),
-        dto.nickname()
+        dto.nickname(),
+        dto.phoneNumber()
     );
 
   }
