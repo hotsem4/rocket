@@ -1,6 +1,7 @@
 package com.rocket.domains.posts.infrastructure.persistence.jpa;
 
 import com.rocket.domains.posts.domain.entity.PostLike;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,5 +11,7 @@ public interface PostLikeRepository extends JpaRepository<PostLike, Long> {
 
   // DB 기준 좋아요 수 집계
   Long countByPostId(Long postId);
+
+  List<PostLike> findAllByPostId(Long postId);
 
 }

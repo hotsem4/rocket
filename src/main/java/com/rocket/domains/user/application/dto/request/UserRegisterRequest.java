@@ -35,7 +35,9 @@ public record UserRegisterRequest(
     String phoneNumber,
 
     @NotNull(message = "역할은 필수입니다.")
-    Role role
+    Role role,
+
+    String profileImageUrl
 ) {
 
 }

@@ -3,6 +3,7 @@ package com.rocket.domains.user.application.service;
 import com.rocket.domains.user.application.dto.request.AddressRequest;
 import com.rocket.domains.user.application.dto.request.UserRegisterRequest;
 import com.rocket.domains.user.application.dto.response.UserInfoResponse;
+import com.rocket.domains.user.application.dto.response.UserSimpleInfoResponse;
 import com.rocket.domains.user.domain.entity.Address;
 import com.rocket.domains.user.domain.entity.User;
 
@@ -17,7 +18,8 @@ public class UserMapper {
         toAddress(dto.address()),
         dto.nickname(),
         dto.phoneNumber(),
-        dto.role()
+        dto.role(),
+        dto.profileImageUrl()
     );
 
   }
@@ -40,6 +42,14 @@ public class UserMapper {
         user.getGender(),
         user.getAddress(),
         user.getRole()
+    );
+  }
+
+  public static UserSimpleInfoResponse toUserSimpleInfo(User user) {
+    return new UserSimpleInfoResponse(
+        user.getId(),
+        user.getNickname(),
+        user.getProfileImageUrl()
     );
   }
 }

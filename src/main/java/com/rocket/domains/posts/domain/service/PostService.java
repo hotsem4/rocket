@@ -17,13 +17,11 @@ public interface PostService {
 
   List<PostListResponse> findAllPosts();
 
-  PostDetailInfoResponse updateById(Long id, PostUpdateRequest dto);
+  PostDetailInfoResponse updateById(Long id, PostUpdateRequest dto, Long userId);
 
-  Boolean deleteById(Long id);
+  void deleteById(Long id, Long userId);
 
   PostDetailInfoResponse findById(Long id);
-
-  Post findEntityById(Long id);
 
   PostDetailInfoResponse getPostDetailWithLikes(Long postId);
 

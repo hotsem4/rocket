@@ -6,6 +6,7 @@ import com.rocket.commons.exception.exceptions.DuplicateLikeException;
 import com.rocket.commons.exception.exceptions.DuplicateNicknameException;
 import com.rocket.commons.exception.exceptions.InvalidEmailFormatException;
 import com.rocket.commons.exception.exceptions.InvalidTokenException;
+import com.rocket.commons.exception.exceptions.LikeNotFoundException;
 import com.rocket.commons.exception.exceptions.LoginFailedException;
 import com.rocket.commons.exception.exceptions.PostNotFoundException;
 import com.rocket.commons.exception.exceptions.RedisOperationException;
@@ -52,6 +53,14 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.CONFLICT)
         .body(
             ErrorResponse.of(409, "이미 좋아요를 누른 게시글입니다.", ex.getMessage(), request.getRequestURI()));
+  }
+
+  @ExceptionHandler(LikeNotFoundException.class)
+  public ResponseEntity<ErrorResponse> handleDuplicateLike(LikeNotFoundException ex,
+      HttpServletRequest request) {
+    return ResponseEntity.status(HttpStatus.CONFLICT)
+        .body(
+            ErrorResponse.of(409, "게시물을 누르지 않았습니다.", ex.getMessage(), request.getRequestURI()));
   }
 
   @ExceptionHandler(DuplicateEmailException.class)

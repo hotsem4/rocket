@@ -52,4 +52,9 @@ public class UserReaderImpl implements UserReader {
     return userJpaRepository.findUserIdByEmailAndPhoneNumber(email, phoneNumber)
         .orElseThrow(() -> new UserNotFoundException(email));
   }
+
+  @Override
+  public List<User> findAllByIdIn(List<Long> userIds) {
+    return userJpaRepository.findAllById(userIds);
+  }
 }

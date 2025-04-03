@@ -82,8 +82,13 @@ public class User {
   @Comment("역할")
   private Role role;
 
+  @Column(name = "profile_image_url")
+  @Comment("프로필 이미지 URL")
+  private String profileImageUrl;
+
+
   private User(String email, String password, int age, Gender gender, Address address,
-      String nickname, String phoneNumber, Role role) {
+      String nickname, String phoneNumber, Role role, String profileImageUrl) {
     this.email = email;
     this.password = password;
     this.age = age;
@@ -92,14 +97,15 @@ public class User {
     this.nickname = nickname;
     this.phoneNumber = phoneNumber;
     this.role = role;
+    this.profileImageUrl = profileImageUrl;
   }
 
   // @VisibleForTesting
   public static User createWithIdForTest(
       Long id, String email, String password, int age, Gender gender, Address address,
-      String nickname, String phoneNumber, Role role
+      String nickname, String phoneNumber, Role role, String profileImageUrl
   ) {
-    User user = new User(email, password, age, gender, address, nickname, phoneNumber, role);
+    User user = new User(email, password, age, gender, address, nickname, phoneNumber, role, profileImageUrl);
     user.id = id;
     return user;
   }
@@ -114,9 +120,10 @@ public class User {
       @Valid @NotNull Address address,
       @NotBlank String nickname,
       @NotBlank String phoneNumber,
-      @NotBlank Role role
+      @NotBlank Role role,
+      String profileImageUrl
   ) {
-    return new User(email, password, age, gender, address, nickname, phoneNumber, role);
+    return new User(email, password, age, gender, address, nickname, phoneNumber, role, profileImageUrl);
   }
 
 
@@ -129,12 +136,14 @@ public class User {
     return age == user.age && Objects.equals(id, user.id) && Objects.equals(email,
         user.email) && Objects.equals(password, user.password) && Objects.equals(
         nickname, user.nickname) && gender == user.gender && Objects.equals(address,
-        user.address) && Objects.equals(phoneNumber, user.phoneNumber) && role == user.role;
+        user.address) && Objects.equals(phoneNumber, user.phoneNumber) && role == user.role
+        && Objects.equals(profileImageUrl, user.profileImageUrl);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, email, password, nickname, age, gender, address, phoneNumber, role);
+    return Objects.hash(id, email, password, nickname, age, gender, address, phoneNumber, role,
+        profileImageUrl);
   }
 
   public void updateFrom(UserUpdateRequest dto) {
@@ -164,6 +173,11 @@ public class User {
     if (!isUpdated) {
       throw new IllegalArgumentException("변경된 내용이 없습니다.");
     }
+  }
+
+  public void updateProfileImageUrl(String profileImageUrl) {
+    // 이건 추후 구현하도록 하자.
+    // 기존 update 코드와 분리시켜 개발할 예정
   }
 
   public void updateNickname(String newNickname) {
@@ -211,5 +225,13 @@ public class User {
         address.street(),
         address.zipCode()
     );
+  }
+
+  public boolean isAdmin() {
+    return this.role == Role.ADMIN;
+  }
+
+  public String getProfileImageUrl() {
+    return null;
   }
 }

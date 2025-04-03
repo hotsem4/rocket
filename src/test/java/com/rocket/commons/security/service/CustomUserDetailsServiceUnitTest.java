@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import com.rocket.commons.security.CustomUserDetails;
 import com.rocket.domains.auth.domain.entity.AuthUser;
 import com.rocket.domains.auth.domain.repository.AuthUserReader;
+import com.rocket.domains.user.domain.enums.Role;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +35,7 @@ class CustomUserDetailsServiceUnitTest {
     String password = "encodedPassword";
     Long userId = 1L;
 
-    AuthUser authUser = new AuthUser(userId, email, password);
+    AuthUser authUser = new AuthUser(userId, email, password, Role.USER);
     when(authUserReader.getAuthUserByEmail(email)).thenReturn(Optional.of(authUser));
 
     // when
@@ -72,7 +73,7 @@ class CustomUserDetailsServiceUnitTest {
   @Test
   void loadUserByUsernameWithIncompleteAuthUser() {
     String email = "incomplete@rocket.com";
-    AuthUser authUser = new AuthUser(null, email, null); // ID, password가 null
+    AuthUser authUser = new AuthUser(null, email, null, null); // ID, password가 null
     when(authUserReader.getAuthUserByEmail(email)).thenReturn(Optional.of(authUser));
 
     UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);

@@ -2,7 +2,7 @@ package com.rocket.domains.user.domain.repository;
 
 import com.rocket.domains.user.domain.entity.User;
 
-public interface UserWriter {
+public interface  UserWriter {
 
   User saveUser(User user);
 

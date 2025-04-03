@@ -17,6 +17,7 @@ import com.rocket.domains.user.application.dto.response.UserInfoResponse;
 import com.rocket.domains.user.domain.entity.Address;
 import com.rocket.domains.user.domain.entity.User;
 import com.rocket.domains.user.domain.enums.Gender;
+import com.rocket.domains.user.domain.enums.Role;
 import com.rocket.domains.user.domain.repository.UserReader;
 import com.rocket.domains.user.domain.repository.UserWriter;
 import java.util.List;
@@ -55,7 +56,7 @@ class UserServiceImplTest {
     Address address = new Address("State", "City", "Street", "Zip");
     // 테스트 전용 정적 메서드를 사용하여 ID를 포함한 User 객체 생성
     user = createWithIdForTest(1L, "test@example.com", "password", 30, Gender.MALE, address,
-        "Toin");
+        "Toin", "01001000000", Role.USER, null);
 
     // 비밀번호 암호화 스텁: 모든 입력에 대해 "encodedPassword"를 반환합니다.
     when(passwordEncoder.encode(any(CharSequence.class))).thenReturn("encodedPassword");
@@ -67,7 +68,7 @@ class UserServiceImplTest {
         "30",
         Gender.MALE,
         new AddressRequest("State", "City", "Street", "Zip"),
-        "Toni"
+        "Toni", "01000000000", Role.USER, null
     );
 
     // 사용자 수정 DTO: 업데이트할 내용
@@ -76,7 +77,7 @@ class UserServiceImplTest {
         35,
         Gender.FEMALE,
         new AddressRequest("State", "City", "NewStreet", "Zip"),
-        "Toni"
+        "Toni", "01000000000"
     );
 
     // 응답용 UserDTO 생성 (User -> DTO 변환)
@@ -148,7 +149,7 @@ class UserServiceImplTest {
 
     Address updatedAddress = new Address("State", "City", "NewStreet", "Zip");
     User updatedUser = createWithIdForTest(1L, "test@example.com", "password", 35, Gender.FEMALE,
-        updatedAddress, "Toni");
+        updatedAddress, "Toni", "010000300000", Role.USER, null);
     when(userReader.findByEmail(anyString())).thenReturn(Optional.of(updatedUser));
 
     // When
@@ -165,7 +166,7 @@ class UserServiceImplTest {
   @Test
   void updateByEmail_fail_noUpdateFields() {
     // Given: 업데이트할 필드가 모두 null인 경우
-    UserUpdateRequest updateDTO = new UserUpdateRequest("test@example.com", null, null, null, null);
+    UserUpdateRequest updateDTO = new UserUpdateRequest("test@example.com", null, null, null, null, null);
     when(userReader.findByEmail(anyString())).thenReturn(Optional.ofNullable(user));
 
     // When & Then: 변경할 내용이 없으면 예외 발생

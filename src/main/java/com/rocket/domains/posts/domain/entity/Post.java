@@ -1,6 +1,8 @@
 package com.rocket.domains.posts.domain.entity;
 
+import com.rocket.domains.posts.application.dto.request.PostUpdateRequest;
 import com.rocket.domains.user.domain.entity.User;
+import com.rocket.domains.user.domain.enums.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -27,7 +29,7 @@ public class Post {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "title", unique = true, nullable = false)
+  @Column(name = "title", nullable = false)
   @Comment("게시글 제목")
   private String title;
 
@@ -74,9 +76,35 @@ public class Post {
     this.content = content;
   }
 
+  // Post.java (도메인 엔티티)
+  public void updateFrom(PostUpdateRequest dto) {
+    boolean isUpdated = false;
+
+    if (dto.title() != null && !dto.title().trim().isEmpty()) {
+      updateTitle(dto.title());
+      isUpdated = true;
+    }
+
+    if (dto.content() != null && !dto.content().trim().isEmpty()) {
+      updateContent(dto.content());
+      isUpdated = true;
+    }
+
+    if (!isUpdated) {
+      throw new IllegalArgumentException("변경할 값이 없습니다.");
+    }
+  }
+
+
   public void addLikeCount(int additionalLikes) {
     this.likeCount += additionalLikes;
   }
+
+  public boolean isOwnedBy(User user) {
+    return this.author.getId().equals(user.getId());
+  }
+
+
 
   @Override
   public boolean equals(Object o) {

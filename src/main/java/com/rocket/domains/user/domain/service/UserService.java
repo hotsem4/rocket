@@ -3,6 +3,7 @@ package com.rocket.domains.user.domain.service;
 import com.rocket.domains.user.application.dto.request.UserRegisterRequest;
 import com.rocket.domains.user.application.dto.request.UserUpdateRequest;
 import com.rocket.domains.user.application.dto.response.UserInfoResponse;
+import com.rocket.domains.user.application.dto.response.UserSimpleInfoResponse;
 import com.rocket.domains.user.domain.entity.User;
 import java.util.List;
 import java.util.Optional;
@@ -30,4 +31,5 @@ public interface UserService {
 
   Long findUserIdByEmailAndPhoneNumber(String email, String phoneNumber);
 
+  List<UserSimpleInfoResponse> findUserSimpleInfoList(List<Long> userIds);
 }

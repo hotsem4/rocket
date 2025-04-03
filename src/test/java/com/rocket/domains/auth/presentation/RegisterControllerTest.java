@@ -15,6 +15,7 @@ import com.rocket.domains.auth.domain.service.AuthService;
 import com.rocket.domains.user.application.dto.request.AddressRequest;
 import com.rocket.domains.user.application.dto.request.UserRegisterRequest;
 import com.rocket.domains.user.domain.enums.Gender;
+import com.rocket.domains.user.domain.enums.Role;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,7 @@ class RegisterControllerTest {
         "25",
         Gender.MALE,
         new AddressRequest("서울시", "강남구", "역삼로 123", "06234"),
-        "test_nickname"
+        "test_nickname", "01000000000", Role.USER, null
     );
   }
 
@@ -93,7 +94,7 @@ class RegisterControllerTest {
         "25",
         Gender.MALE,
         new AddressRequest("서울시", "강남구", "역삼로 123", "06234"),
-        "nickname"
+        "nickname", "01000000000", Role.USER, null
     );
 
     mockMvc.perform(post("/register")
@@ -113,7 +114,7 @@ class RegisterControllerTest {
         "25",
         Gender.MALE,
         new AddressRequest("서울시", "강남구", "역삼로 123", "06234"),
-        "nickname"
+        "nickname", "01000000000", Role.USER, null
     );
 
     mockMvc.perform(post("/register")
@@ -136,9 +137,11 @@ class RegisterControllerTest {
             "state": "서울시",
             "city" : "강남구",
             "street": "역삼로 123",
-            "zipcCode": "06234"
+            "zipCode": "06234"
           },
-          "nickname": "nickname"
+          "nickname": "nickname",
+          "phoneNumber": "01000100200",
+          "role": "USER"
         }
         """;
 
@@ -164,7 +167,9 @@ class RegisterControllerTest {
             "street": "역삼로 123",
             "zipCode": "06234"
           },
-          "nickname": "%s"
+          "nickname": "%s",
+          "phoneNumber": "01000200051",
+          "role": "USER"
         }
         """.formatted("a".repeat(31));
 
@@ -189,7 +194,9 @@ class RegisterControllerTest {
             "city": "강남구",
             "street": "역삼로 123"
           },
-          "nickname": "닉네임"
+          "nickname": "닉네임",
+          "phoneNumber": "01000200051",
+          "role": "USER"
         }
         """;
 
@@ -216,7 +223,9 @@ class RegisterControllerTest {
             "street": "역삼로 123",
             "zipCode": "06234"
           },
-          "nickname": "닉네임"
+          "nickname": "닉네임",
+          "phoneNumber": "01000100200",
+          "role": "USER"
         }
         """;
 

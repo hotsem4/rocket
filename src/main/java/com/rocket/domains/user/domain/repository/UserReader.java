@@ -19,4 +19,6 @@ public interface UserReader {
   List<User> findAll();
 
   Long findUserIdByEmailAndPhoneNumber(String email, String phoneNumber);
+
+  List<User> findAllByIdIn(List<Long> ids);
 }

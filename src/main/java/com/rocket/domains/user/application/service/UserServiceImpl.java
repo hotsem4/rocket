@@ -4,6 +4,7 @@ import com.rocket.commons.exception.exceptions.UserNotFoundException;
 import com.rocket.domains.user.application.dto.request.UserRegisterRequest;
 import com.rocket.domains.user.application.dto.request.UserUpdateRequest;
 import com.rocket.domains.user.application.dto.response.UserInfoResponse;
+import com.rocket.domains.user.application.dto.response.UserSimpleInfoResponse;
 import com.rocket.domains.user.domain.entity.User;
 import com.rocket.domains.user.domain.repository.UserReader;
 import com.rocket.domains.user.domain.repository.UserWriter;
@@ -98,6 +99,14 @@ public class UserServiceImpl implements UserService {
   @Override
   public Long findUserIdByEmailAndPhoneNumber(String email, String phoneNumber) {
     return userReader.findUserIdByEmailAndPhoneNumber(email, phoneNumber);
+  }
+
+  @Override
+  public List<UserSimpleInfoResponse> findUserSimpleInfoList(List<Long> userIds) {
+    List<User> users = userReader.findAllByIdIn(userIds);
+    return users.stream()
+        .map(UserMapper::toUserSimpleInfo)
+        .toList();
   }
 
 }

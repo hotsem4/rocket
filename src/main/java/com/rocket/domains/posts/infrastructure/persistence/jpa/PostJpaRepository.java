@@ -15,4 +15,6 @@ public interface PostJpaRepository extends JpaRepository<Post, Long> {
   List<Post> findAllByAuthorId(Long userId);
 
   void deleteById(@NonNull Long postId);
+
+  int findLikeCountById(Long postId);
 }

@@ -1,5 +1,6 @@
 package com.rocket.domains.posts.application.service;
 
+import com.rocket.commons.exception.exceptions.AccessDeniedCustomException;
 import com.rocket.commons.exception.exceptions.PostNotFoundException;
 import com.rocket.commons.exception.exceptions.UserNotFoundException;
 import com.rocket.domains.posts.application.assembler.PostResponseAssembler;
@@ -12,10 +13,12 @@ import com.rocket.domains.posts.domain.repository.PostReader;
 import com.rocket.domains.posts.domain.repository.PostWriter;
 import com.rocket.domains.posts.domain.service.PostService;
 import com.rocket.domains.user.domain.entity.User;
+import com.rocket.domains.user.domain.facade.UserFacade;
 import com.rocket.domains.user.domain.service.UserLookupService;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +30,7 @@ public class PostServiceImpl implements PostService {
   private final PostReader postReader;
   private final PostWriter postWriter;
   private final PostResponseAssembler postResponseAssembler;
+  private final UserFacade userFacade;
 
   @Override
   @Transactional
@@ -36,26 +40,17 @@ public class PostServiceImpl implements PostService {
       throw new IllegalArgumentException("유효하지 않은 작성자 ID입니다.");
     }
 
-    if (dto.title() == null || dto.title().trim().isEmpty()) {
-      throw new IllegalArgumentException("제목은 필수 입력값이며, 비어 있을 수 없습니다.");
-    }
-    if (dto.content() == null || dto.content().trim().isEmpty()) {
-      throw new IllegalArgumentException("내용은 필수 입력값이며, 비어 있을 수 없습니다.");
-    }
-
     User author = userLookupService.findById(userId)
         .orElseThrow(() -> new UserNotFoundException("로그인 유저를 찾을 수 없습니다."));
 
     Post post = PostMapper.toEntity(dto, author);
 
-//    PostRepository postRepository = postRepositoryProvider.getIfAvailable();
 
     Post savedPost = postWriter.savePost(post);
     if (savedPost == null) {
       throw new IllegalArgumentException("게시글 저장 중 문제가 발생했습니다.");
     }
 
-    // return PostMapper.toDetailDto(savedPost, postLikeRedisService);
     return postResponseAssembler.toDetailDto(savedPost);
   }
 
@@ -74,34 +69,34 @@ public class PostServiceImpl implements PostService {
 
   @Override
   @Transactional
-  public PostDetailInfoResponse updateById(Long id, PostUpdateRequest dto) {
-    if ((dto.title() == null && dto.content() == null) ||
-        (dto.title() != null && dto.title().trim().isEmpty() &&
-            dto.content() != null && dto.content().trim().isEmpty())) {
-      throw new IllegalArgumentException("변경할 값이 없습니다.");
-    }
-
+  public PostDetailInfoResponse updateById(Long id, PostUpdateRequest dto, Long userId) {
     Post post = postReader.findById(id)
         .orElseThrow(() -> new PostNotFoundException(String.valueOf(id)));
 
-    if (dto.title() != null) {
-      post.updateTitle(dto.title());
+    User user = userFacade.findById(userId)
+        .orElseThrow(() -> new UserNotFoundException(String.valueOf(userId)));
+
+    if (!post.isOwnedBy(user) && !user.isAdmin()) {
+      throw new AccessDeniedCustomException("게시글 수정 권한이 없습니다.");
     }
-    if (dto.content() != null) {
-      post.updateContent(dto.content());
-    }
+
+    post.updateFrom(dto); // 핵심 비즈니스 로직은 도메인 객체가 책임짐
 
     return postResponseAssembler.toDetailDto(post);
   }
 
   @Override
-  public Boolean deleteById(Long id) {
+  public void deleteById(Long id, Long userId) {
     Post post = postReader.findById(id)
         .orElseThrow(() -> new PostNotFoundException(String.valueOf(id)));
 
-    postWriter.deleteById(id);
+    User user = userFacade.getByIdOrThrow(userId);
 
-    return true;
+    if (!post.isOwnedBy(user) && !user.isAdmin()){
+      throw new AccessDeniedCustomException("게시글을 삭제할 권한이 없습니다.");
+    }
+
+    postWriter.deleteById(id);
   }
 
 
@@ -111,12 +106,6 @@ public class PostServiceImpl implements PostService {
     Post post = postReader.findById(id)
         .orElseThrow(() -> new PostNotFoundException(String.valueOf(id)));
     return postResponseAssembler.toDetailDto(post);
-  }
-
-  @Override
-  public Post findEntityById(Long id) {
-    return postReader.findById(id)
-        .orElseThrow(() -> new PostNotFoundException(String.valueOf(id)));
   }
 
   @Override

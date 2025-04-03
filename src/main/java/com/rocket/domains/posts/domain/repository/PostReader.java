@@ -13,4 +13,6 @@ public interface PostReader {
   List<Post> findAll();
 
   boolean existsById(Long id);
+
+  int findLikeCountById(Long id);
 }

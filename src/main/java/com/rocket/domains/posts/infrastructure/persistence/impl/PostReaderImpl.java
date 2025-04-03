@@ -33,4 +33,9 @@ public class PostReaderImpl implements PostReader {
   public boolean existsById(Long id) {
     return postJpaRepository.existsById(id);
   }
+
+  @Override
+  public int findLikeCountById(Long id) {
+    return postJpaRepository.findLikeCountById(id);
+  }
 }
