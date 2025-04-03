@@ -1,4 +1,4 @@
-package com.rocket.commons.security;
+package com.rocket.commons.security.jwt;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;

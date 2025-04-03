@@ -1,4 +1,4 @@
-package com.rocket.commons.security;
+package com.rocket.commons.security.auth;
 
 import com.rocket.domains.user.domain.enums.Role;
 import java.util.Collection;

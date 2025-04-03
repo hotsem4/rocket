@@ -1,4 +1,4 @@
-package com.rocket.commons.exception;
+package com.rocket.commons.exception.handler;
 
 import com.rocket.commons.exception.exceptions.AccessDeniedCustomException;
 import com.rocket.commons.exception.exceptions.DuplicateEmailException;
@@ -11,7 +11,7 @@ import com.rocket.commons.exception.exceptions.LoginFailedException;
 import com.rocket.commons.exception.exceptions.PostNotFoundException;
 import com.rocket.commons.exception.exceptions.RedisOperationException;
 import com.rocket.commons.exception.exceptions.UserNotFoundException;
-import com.rocket.commons.exception.response.ErrorResponse;
+import com.rocket.commons.exception.model.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

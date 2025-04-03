@@ -12,8 +12,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rocket.commons.exception.exceptions.InvalidTokenException;
 import com.rocket.commons.exception.exceptions.LoginFailedException;
-import com.rocket.commons.security.JwtProvider;
-import com.rocket.commons.security.JwtResolver;
+import com.rocket.commons.security.jwt.JwtProvider;
+import com.rocket.commons.security.jwt.JwtResolver;
 import com.rocket.domains.auth.application.dto.response.TokenResponse;
 import com.rocket.domains.auth.domain.service.AuthService;
 import com.rocket.domains.user.application.dto.request.LoginRequest;

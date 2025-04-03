@@ -1,4 +1,4 @@
-package com.rocket.commons.security;
+package com.rocket.commons.security.jwt;
 
 import com.rocket.domains.auth.domain.repository.RefreshTokenStore;
 import jakarta.servlet.FilterChain;

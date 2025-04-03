@@ -1,7 +1,7 @@
 package com.rocket.domains.auth.presentation;
 
-import com.rocket.commons.security.JwtProvider;
-import com.rocket.commons.security.JwtResolver;
+import com.rocket.commons.security.jwt.JwtProvider;
+import com.rocket.commons.security.jwt.JwtResolver;
 import com.rocket.domains.auth.application.dto.response.TokenResponse;
 import com.rocket.domains.auth.domain.service.AuthService;
 import com.rocket.domains.user.application.dto.request.LoginRequest;

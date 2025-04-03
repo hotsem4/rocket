@@ -1,11 +1,10 @@
-package com.rocket.commons.security.service;
+package com.rocket.commons.security.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.rocket.commons.security.CustomUserDetails;
 import com.rocket.domains.auth.domain.entity.AuthUser;
 import com.rocket.domains.auth.domain.repository.AuthUserReader;
 import com.rocket.domains.user.domain.enums.Role;

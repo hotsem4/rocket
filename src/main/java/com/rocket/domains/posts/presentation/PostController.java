@@ -1,6 +1,6 @@
 package com.rocket.domains.posts.presentation;
 
-import com.rocket.commons.security.CustomUserDetails;
+import com.rocket.commons.security.auth.CustomUserDetails;
 import com.rocket.domains.posts.application.dto.request.PostCreateRequest;
 import com.rocket.domains.posts.application.dto.request.PostUpdateRequest;
 import com.rocket.domains.posts.application.dto.response.PostDetailInfoResponse;

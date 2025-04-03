@@ -1,15 +1,14 @@
 package com.rocket.domains.posts.application.service;
 
 import com.rocket.commons.exception.exceptions.DuplicateLikeException;
-import com.rocket.commons.exception.exceptions.PostNotFoundException;
 import com.rocket.commons.exception.exceptions.LikeNotFoundException;
+import com.rocket.commons.exception.exceptions.PostNotFoundException;
 import com.rocket.domains.posts.domain.entity.Post;
 import com.rocket.domains.posts.domain.entity.PostLike;
 import com.rocket.domains.posts.domain.repository.PostLikeCacheRepository;
 import com.rocket.domains.posts.domain.repository.PostReader;
 import com.rocket.domains.posts.domain.repository.PostWriter;
 import com.rocket.domains.posts.infrastructure.persistence.jpa.PostLikeRepository;
-import com.rocket.domains.user.application.dto.response.UserInfoResponse;
 import com.rocket.domains.user.application.dto.response.UserSimpleInfoResponse;
 import com.rocket.domains.user.domain.facade.UserFacade;
 import com.rocket.domains.user.domain.validator.UserValidator;
@@ -62,7 +61,8 @@ public class PostLikeService {
     if (cacheRepo.hasKey(postId)) {
       cacheRepo.decrementLikeCount(postId);
     } else {
-      Post post = postReader.findById(postId).orElseThrow(() -> new PostNotFoundException(String.valueOf(postId)));
+      Post post = postReader.findById(postId)
+          .orElseThrow(() -> new PostNotFoundException(String.valueOf(postId)));
       post.addLikeCount(-1);
     }
   }
@@ -86,7 +86,6 @@ public class PostLikeService {
 
       log.info("[syncRedisLikeToDB] postId: {}, redisCount: {}", postId, redisCount);
 
-
       if (redisCount <= 0) {
         log.info("[syncRedisLikeToDB] Skipping postId: {} due to ttl or zero count", postId);
 
@@ -96,7 +95,8 @@ public class PostLikeService {
       Post post = postReader.findById(postId).orElse(null);
       if (post != null) {
         post.addLikeCount(redisCount);
-        log.info("[syncRedisLikeToDB] Before Save - postId: {}, updatedLikeCount: {}", postId, post.getLikeCount());
+        log.info("[syncRedisLikeToDB] Before Save - postId: {}, updatedLikeCount: {}", postId,
+            post.getLikeCount());
 
         postWriter.savePost(post);
       } else {

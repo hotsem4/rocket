@@ -1,4 +1,4 @@
-package com.rocket.commons.security;
+package com.rocket.commons.security.jwt;
 
 import org.springframework.stereotype.Component;
 

@@ -1,6 +1,6 @@
 package com.rocket.config;
 
-import com.rocket.commons.security.service.CustomUserDetailsService;
+import com.rocket.commons.security.auth.CustomUserDetailsService;
 import com.rocket.domains.auth.domain.repository.AuthUserReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

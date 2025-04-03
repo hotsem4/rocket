@@ -1,4 +1,4 @@
-package com.rocket.commons.utils;
+package com.rocket.commons.security.auth;
 
 import jakarta.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;

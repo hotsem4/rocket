@@ -1,6 +1,5 @@
-package com.rocket.commons.security.service;
+package com.rocket.commons.security.auth;
 
-import com.rocket.commons.security.CustomUserDetails;
 import com.rocket.domains.auth.domain.repository.AuthUserReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

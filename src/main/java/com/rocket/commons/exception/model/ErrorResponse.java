@@ -1,4 +1,4 @@
-package com.rocket.commons.exception.response;
+package com.rocket.commons.exception.model;
 
 import java.time.LocalDateTime;
 

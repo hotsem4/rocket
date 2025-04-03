@@ -1,6 +1,6 @@
 package com.rocket.domains.user.presentation;
 
-import com.rocket.commons.security.CustomUserDetails;
+import com.rocket.commons.security.auth.CustomUserDetails;
 import com.rocket.domains.user.application.dto.request.UserUpdateRequest;
 import com.rocket.domains.user.application.dto.response.UserInfoResponse;
 import com.rocket.domains.user.domain.service.UserService;

@@ -1,7 +1,7 @@
 package com.rocket.domains.user.application.service.passwordReset;
 
 import com.rocket.commons.exception.exceptions.UserNotFoundException;
-import com.rocket.commons.utils.ResetTokenUtil;
+import com.rocket.commons.security.auth.ResetTokenUtil;
 import com.rocket.domains.user.domain.entity.User;
 import com.rocket.domains.user.domain.service.UserService;
 import lombok.RequiredArgsConstructor;

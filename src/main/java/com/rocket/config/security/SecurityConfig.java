@@ -1,10 +1,10 @@
-package com.rocket.config;
+package com.rocket.config.security;
 
-import com.rocket.commons.security.JwtAuthenticationFilter;
-import com.rocket.commons.security.JwtProvider;
-import com.rocket.commons.security.JwtResolver;
+import com.rocket.commons.security.jwt.JwtAuthenticationFilter;
+import com.rocket.commons.security.jwt.JwtProvider;
+import com.rocket.commons.security.jwt.JwtResolver;
 import com.rocket.commons.security.handler.CustomAccessDeniedHandler;
-import com.rocket.commons.security.service.CustomUserDetailsService;
+import com.rocket.commons.security.auth.CustomUserDetailsService;
 import com.rocket.domains.auth.domain.repository.RefreshTokenStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

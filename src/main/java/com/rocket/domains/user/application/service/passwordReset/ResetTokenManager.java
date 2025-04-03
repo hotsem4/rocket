@@ -1,7 +1,7 @@
 package com.rocket.domains.user.application.service.passwordReset;
 
 import com.rocket.commons.exception.exceptions.InvalidTokenException;
-import com.rocket.commons.utils.ResetTokenUtil;
+import com.rocket.commons.security.auth.ResetTokenUtil;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
