@@ -3,6 +3,7 @@ package com.rocket.domains.user.application.dto.response;
 import com.rocket.domains.user.domain.entity.Address;
 import com.rocket.domains.user.domain.entity.User;
 import com.rocket.domains.user.domain.enums.Gender;
+import com.rocket.domains.user.domain.enums.Role;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
@@ -30,7 +31,12 @@ public record UserInfoResponse(
 
     @NotNull(message = "주소 값이 null일 수 없습니다.")
     @Valid
-    Address address
+    Address address,
+
+    @NotNull(message = "역할은 필수 조건입니다.")
+    @Valid
+    Role role
+
 ) {
 
   public static UserInfoResponse fromUser(User user) {
@@ -40,7 +46,8 @@ public record UserInfoResponse(
         user.getNickname(),
         user.getAge(),
         user.getGender(),
-        user.getAddress()
+        user.getAddress(),
+        user.getRole()
     );
   }
 }

@@ -16,6 +16,6 @@ public class AuthUserReaderImpl implements AuthUserReader {
   @Override
   public Optional<AuthUser> getAuthUserByEmail(String email) {
     return userFacade.findUserByEmail(email)
-        .map(user -> new AuthUser(user.getId(), user.getEmail(), user.getPassword()));
+        .map(user -> new AuthUser(user.getId(), user.getEmail(), user.getPassword(), user.getRole()));
   }
 }

@@ -1,6 +1,7 @@
 package com.rocket.domains.user.application.dto.request;
 
 import com.rocket.domains.user.domain.enums.Gender;
+import com.rocket.domains.user.domain.enums.Role;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -31,7 +32,10 @@ public record UserRegisterRequest(
     String nickname,
 
     @NotBlank(message = "전화번호는 필수입니다.")
-    String phoneNumber
+    String phoneNumber,
+
+    @NotNull(message = "역할은 필수입니다.")
+    Role role
 ) {
 
 }
