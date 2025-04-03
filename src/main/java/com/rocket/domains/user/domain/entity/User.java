@@ -4,7 +4,6 @@ import com.rocket.domains.user.application.dto.request.AddressRequest;
 import com.rocket.domains.user.application.dto.request.UserUpdateRequest;
 import com.rocket.domains.user.domain.enums.Gender;
 import com.rocket.domains.user.domain.enums.Role;
-import io.micrometer.core.instrument.step.StepRegistryConfig;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -75,7 +74,7 @@ public class User {
 
   @NotNull(message = "전화번호는 필수 입력값입니다.")
   @NotBlank
-  @Column(name ="phoneNumber", nullable = false)
+  @Column(name = "phoneNumber", nullable = false)
   private String phoneNumber;
 
 
@@ -130,12 +129,12 @@ public class User {
     return age == user.age && Objects.equals(id, user.id) && Objects.equals(email,
         user.email) && Objects.equals(password, user.password) && Objects.equals(
         nickname, user.nickname) && gender == user.gender && Objects.equals(address,
-        user.address) && Objects.equals(phoneNumber, user.phoneNumber);
+        user.address) && Objects.equals(phoneNumber, user.phoneNumber) && role == user.role;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, email, password, nickname, age, gender, address, phoneNumber);
+    return Objects.hash(id, email, password, nickname, age, gender, address, phoneNumber, role);
   }
 
   public void updateNickname(String newNickname) {
