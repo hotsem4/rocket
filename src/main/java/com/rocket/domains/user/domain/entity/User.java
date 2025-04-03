@@ -74,7 +74,7 @@ public class User {
 
   @NotNull(message = "전화번호는 필수 입력값입니다.")
   @NotBlank
-  @Column(name = "phoneNumber", nullable = false)
+  @Column(name = "phone_number", nullable = false)
   private String phoneNumber;
 
 
