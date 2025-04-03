@@ -3,6 +3,7 @@ package com.rocket.config;
 import com.rocket.commons.security.JwtAuthenticationFilter;
 import com.rocket.commons.security.JwtProvider;
 import com.rocket.commons.security.JwtResolver;
+import com.rocket.commons.security.handler.CustomAccessDeniedHandler;
 import com.rocket.commons.security.service.CustomUserDetailsService;
 import com.rocket.domains.auth.domain.repository.RefreshTokenStore;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,8 +75,11 @@ public class SecurityConfig {
             ).permitAll()
             .anyRequest().authenticated()
         )
+        .exceptionHandling(ex -> ex
+            .accessDeniedHandler(new CustomAccessDeniedHandler()))
         .addFilterBefore(jwtAuthenticationFilter(authenticationManager),
             UsernamePasswordAuthenticationFilter.class)
         .build();
   }
 }
+

@@ -18,8 +18,13 @@ public class CustomUserDetailsService implements UserDetailsService {
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
     return authUserReader.getAuthUserByEmail(email)
         .map(
-            authUser -> new CustomUserDetails(authUser.id(), authUser.email(), authUser.password()))
+            authUser -> new CustomUserDetails(
+                authUser.id(),
+                authUser.email(),
+                authUser.password(),
+                authUser.role()
+            )
+        )
         .orElseThrow(() -> new UsernameNotFoundException(email));
-
   }
 }

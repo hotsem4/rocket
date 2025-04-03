@@ -1,8 +1,9 @@
 package com.rocket.domains.user.domain.entity;
 
 import com.rocket.domains.user.application.dto.request.AddressRequest;
+import com.rocket.domains.user.application.dto.request.UserUpdateRequest;
 import com.rocket.domains.user.domain.enums.Gender;
-import io.micrometer.core.instrument.step.StepRegistryConfig;
+import com.rocket.domains.user.domain.enums.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -62,7 +63,7 @@ public class User {
 
   @NotNull(message = "성별은 필수 입력값입니다.")
   @Column(name = "gender", nullable = false)
-  @Comment("나이")
+  @Comment("성별")
   @Enumerated(EnumType.STRING)
   private Gender gender;
 
@@ -73,10 +74,16 @@ public class User {
 
   @NotNull(message = "전화번호는 필수 입력값입니다.")
   @NotBlank
+  @Column(name = "phoneNumber", nullable = false)
   private String phoneNumber;
 
+
+  @Enumerated(EnumType.STRING)
+  @Comment("역할")
+  private Role role;
+
   private User(String email, String password, int age, Gender gender, Address address,
-      String nickname, String phoneNumber) {
+      String nickname, String phoneNumber, Role role) {
     this.email = email;
     this.password = password;
     this.age = age;
@@ -84,14 +91,15 @@ public class User {
     this.address = address;
     this.nickname = nickname;
     this.phoneNumber = phoneNumber;
+    this.role = role;
   }
 
   // @VisibleForTesting
   public static User createWithIdForTest(
       Long id, String email, String password, int age, Gender gender, Address address,
-      String nickname, String phoneNumber
+      String nickname, String phoneNumber, Role role
   ) {
-    User user = new User(email, password, age, gender, address, nickname, phoneNumber);
+    User user = new User(email, password, age, gender, address, nickname, phoneNumber, role);
     user.id = id;
     return user;
   }
@@ -105,9 +113,10 @@ public class User {
       @NotNull Gender gender,
       @Valid @NotNull Address address,
       @NotBlank String nickname,
-      @NotBlank String phoneNumber
+      @NotBlank String phoneNumber,
+      @NotBlank Role role
   ) {
-    return new User(email, password, age, gender, address, nickname, phoneNumber);
+    return new User(email, password, age, gender, address, nickname, phoneNumber, role);
   }
 
 
@@ -120,12 +129,12 @@ public class User {
     return age == user.age && Objects.equals(id, user.id) && Objects.equals(email,
         user.email) && Objects.equals(password, user.password) && Objects.equals(
         nickname, user.nickname) && gender == user.gender && Objects.equals(address,
-        user.address) && Objects.equals(phoneNumber, user.phoneNumber);
+        user.address) && Objects.equals(phoneNumber, user.phoneNumber) && role == user.role;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, email, password, nickname, age, gender, address, phoneNumber);
+    return Objects.hash(id, email, password, nickname, age, gender, address, phoneNumber, role);
   }
 
   public void updateNickname(String newNickname) {
