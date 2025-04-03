@@ -137,8 +137,37 @@ public class User {
     return Objects.hash(id, email, password, nickname, age, gender, address, phoneNumber, role);
   }
 
+  public void updateFrom(UserUpdateRequest dto) {
+    boolean isUpdated = false;
+
+    if (dto.age() != null && this.age != dto.age()) {
+      updateAge(dto.age());
+      isUpdated = true;
+    }
+    if (dto.gender() != null && this.gender != dto.gender()) {
+      updateGender(dto.gender());
+      isUpdated = true;
+    }
+    if (dto.address() != null && !this.address.equals(dto.address().toAddress())) {
+      updateAddress(dto.address());
+      isUpdated = true;
+    }
+    if (dto.nickname() != null && !this.nickname.equals(dto.nickname())) {
+      updateNickname(dto.nickname());
+      isUpdated = true;
+    }
+    if (dto.phoneNumber() != null && !this.phoneNumber.equals(dto.phoneNumber())) {
+      updatePhoneNumber(dto.phoneNumber());
+      isUpdated = true;
+    }
+
+    if (!isUpdated) {
+      throw new IllegalArgumentException("변경된 내용이 없습니다.");
+    }
+  }
+
   public void updateNickname(String newNickname) {
-    if (newNickname == null) {
+    if (newNickname == null || newNickname.isEmpty()) {
       throw new IllegalArgumentException("닉네임은 null일 수 없습니다.");
     }
     this.nickname = newNickname;

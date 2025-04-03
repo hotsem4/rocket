@@ -1,7 +1,9 @@
 package com.rocket.commons.exception;
 
+import com.rocket.commons.exception.exceptions.AccessDeniedCustomException;
 import com.rocket.commons.exception.exceptions.DuplicateEmailException;
 import com.rocket.commons.exception.exceptions.DuplicateLikeException;
+import com.rocket.commons.exception.exceptions.DuplicateNicknameException;
 import com.rocket.commons.exception.exceptions.InvalidEmailFormatException;
 import com.rocket.commons.exception.exceptions.InvalidTokenException;
 import com.rocket.commons.exception.exceptions.LoginFailedException;
@@ -57,7 +59,17 @@ public class GlobalExceptionHandler {
       HttpServletRequest request) {
     return ResponseEntity.status(HttpStatus.CONFLICT)
         .body(
-            ErrorResponse.of(409, "중복되어 해당 이메일을 사용할 수 없습니다.", ex.getMessage(),
+            ErrorResponse.of(409, "이미 사용중인 Email입니다.", ex.getMessage(),
+                request.getRequestURI())
+        );
+  }
+
+  @ExceptionHandler(DuplicateNicknameException.class)
+  public ResponseEntity<ErrorResponse> handleDuplicateEmail(DuplicateNicknameException ex,
+      HttpServletRequest request) {
+    return ResponseEntity.status(HttpStatus.CONFLICT)
+        .body(
+            ErrorResponse.of(409, "이미 사용중인 닉네임입니다.", ex.getMessage(),
                 request.getRequestURI())
         );
   }
@@ -135,6 +147,13 @@ public class GlobalExceptionHandler {
     );
 
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+  }
+
+  @ExceptionHandler(AccessDeniedCustomException.class)
+  public ResponseEntity<ErrorResponse> handleAccessDeniedCustom(AccessDeniedCustomException ex,
+      HttpServletRequest request) {
+    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        .body(ErrorResponse.of(403, "권한이 없습니다.", ex.getMessage(), request.getRequestURI()));
   }
 
   @ExceptionHandler(Exception.class)

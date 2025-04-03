@@ -1,5 +1,6 @@
 package com.rocket.domains.user.application.dto.request;
 
+import com.rocket.domains.user.domain.entity.Address;
 import jakarta.validation.constraints.NotBlank;
 
 public record AddressRequest(
@@ -16,4 +17,7 @@ public record AddressRequest(
     String zipCode
 ) {
 
+  public Address toAddress() {
+    return new Address(state, city, street, zipCode);
+  }
 }
