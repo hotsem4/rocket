@@ -16,7 +16,8 @@ public class UserMapper {
         dto.gender(),
         toAddress(dto.address()),
         dto.nickname(),
-        dto.phoneNumber()
+        dto.phoneNumber(),
+        dto.role()
     );
 
   }
@@ -37,7 +38,8 @@ public class UserMapper {
         user.getNickname(),
         user.getAge(),
         user.getGender(),
-        user.getAddress()
+        user.getAddress(),
+        user.getRole()
     );
   }
 }
