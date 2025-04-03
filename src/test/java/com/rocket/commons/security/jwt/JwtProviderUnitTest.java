@@ -1,8 +1,7 @@
-package com.rocket.commons.security;
+package com.rocket.commons.security.jwt;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.rocket.commons.security.jwt.JwtProvider;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.BeforeEach;
