@@ -16,4 +16,13 @@ public class UserValidator {
       throw new UserNotFoundException(String.valueOf(userId));
     }
   }
+
+  public void validateUserNicknameExists(String nickname) {
+    if (nickname == null || nickname.isEmpty()) {
+      throw new IllegalArgumentException("닉네임이 존재하지 않습니다.");
+    }
+    if (userReader.existsByNickname(nickname)) {
+      throw new IllegalArgumentException("중복되는 닉네임이 존재합니다.");
+    }
+  }
 }
