@@ -8,6 +8,7 @@ import com.rocket.domains.user.domain.entity.User;
 import com.rocket.domains.user.domain.repository.UserReader;
 import com.rocket.domains.user.domain.repository.UserWriter;
 import com.rocket.domains.user.domain.service.UserService;
+import com.rocket.domains.user.domain.validator.UserValidator;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,12 +21,14 @@ public class UserServiceImpl implements UserService {
   private final UserReader userReader;
   private final UserWriter userWriter;
   private final PasswordEncoder passwordEncoder;
+  private final UserValidator userValidator;
 
   public UserServiceImpl(UserReader userReader, UserWriter userWriter,
-      PasswordEncoder passwordEncoder) {
+      PasswordEncoder passwordEncoder, UserValidator userValidator) {
     this.userReader = userReader;
     this.userWriter = userWriter;
     this.passwordEncoder = passwordEncoder;
+    this.userValidator = userValidator;
   }
 
   @Override
@@ -58,28 +61,11 @@ public class UserServiceImpl implements UserService {
     User user = userReader.findByEmail(dto.email())
         .orElseThrow(() -> new UserNotFoundException(dto.email()));
 
-    boolean isUpdated = false;
-
-    if (dto.age() != null) {
-      user.updateAge(dto.age());
-      isUpdated = true;
-    }
-    if (dto.gender() != null) {
-      user.updateGender(dto.gender());
-      isUpdated = true;
-    }
-    if (dto.address() != null) {
-      user.updateAddress(dto.address());
-      isUpdated = true;
-    }
-    if (dto.nickname() != null) {
-      user.updateNickname(dto.nickname());
-      isUpdated = true;
+    if (dto.nickname() != null && !dto.nickname().equals(user.getNickname())) {
+      userValidator.validateUserNicknameExists(dto.nickname());
     }
 
-    if (!isUpdated) {
-      throw new IllegalArgumentException("변경된 내용이 없습니다.");
-    }
+    user.updateFrom(dto);
 
     return UserInfoResponse.fromUser(user);
   }
