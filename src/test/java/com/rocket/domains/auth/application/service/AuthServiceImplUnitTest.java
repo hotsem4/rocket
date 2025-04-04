@@ -23,6 +23,7 @@ import com.rocket.domains.user.domain.entity.Address;
 import com.rocket.domains.user.domain.entity.User;
 import com.rocket.domains.user.domain.enums.Gender;
 import com.rocket.domains.user.domain.enums.Role;
+import com.rocket.domains.user.domain.enums.UserStatus;
 import com.rocket.domains.user.domain.facade.UserFacade;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,7 +63,7 @@ class AuthServiceImplUnitTest {
     );
 
     User user = User.createWithIdForTest(1L, dto.email(), dto.password(), 25, Gender.MALE,
-        new Address("서울", "강남", "테헤란로", "12345"), dto.nickname(),"01000000000" ,Role.USER, null);
+        new Address("서울", "강남", "테헤란로", "12345"), dto.nickname(),"01000000000" ,Role.USER, null, UserStatus.ACTIVE, 60, null, null);
 
     when(userFacade.registerUser(dto)).thenReturn(user);
     when(jwtProvider.createAccessToken(dto.email())).thenReturn("accessToken");
@@ -117,7 +118,7 @@ class AuthServiceImplUnitTest {
     String newRefreshToken = "newRefreshToken";
 
     User user = User.createWithIdForTest(1L, email, encodedPassword, 25, Gender.MALE,
-        new Address("서울", "강남", "테헤란로", "12345"), "nickname", "01000000000", Role.USER, null);
+        new Address("서울", "강남", "테헤란로", "12345"), "nickname", "01000000000", Role.USER, null, UserStatus.ACTIVE, 60, null, null);
 
     when(userFacade.findUserByEmail(email)).thenReturn(Optional.of(user));
     when(passwordEncoder.matches(rawPassword, encodedPassword)).thenReturn(true);
@@ -171,7 +172,7 @@ class AuthServiceImplUnitTest {
     String wrongPassword = "wrongPassword";
 
     User user = User.createWithIdForTest(1L, email, correctPassword, 25, Gender.MALE,
-        new Address("서울", "강남", "테헤란로", "12345"), "nickname", "01000000000", Role.USER, null);
+        new Address("서울", "강남", "테헤란로", "12345"), "nickname", "01000000000", Role.USER, null, UserStatus.ACTIVE, 60, null, null);
 
     when(userFacade.findUserByEmail(email)).thenReturn(Optional.of(user));
     when(passwordEncoder.matches(wrongPassword, correctPassword)).thenReturn(false);
@@ -235,7 +236,7 @@ class AuthServiceImplUnitTest {
         email, "password", "25", Gender.MALE, address, "nickname", "01000000000", Role.USER, null);
 
     User savedUser = User.createWithIdForTest(1L, email, "encodedPassword", 25,
-        Gender.MALE, new Address("서울", "강남", "테헤란로", "12345"), "nickname", "01000000000", Role.USER, null);
+        Gender.MALE, new Address("서울", "강남", "테헤란로", "12345"), "nickname", "01000000000", Role.USER, null, UserStatus.ACTIVE, 60, null, null);
 
     when(userFacade.registerUser(request)).thenReturn(savedUser);
     when(jwtProvider.createAccessToken(email)).thenReturn(accessToken);

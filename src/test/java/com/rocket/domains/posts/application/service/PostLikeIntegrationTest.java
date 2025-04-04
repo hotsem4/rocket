@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.rocket.commons.exception.exceptions.DuplicateLikeException;
-import com.rocket.domains.auth.domain.service.AuthService;
 import com.rocket.domains.posts.domain.entity.Post;
 import com.rocket.domains.posts.domain.entity.PostLike;
 import com.rocket.domains.posts.domain.repository.PostLikeCacheRepository;
@@ -13,11 +12,13 @@ import com.rocket.domains.posts.domain.repository.PostWriter;
 import com.rocket.domains.posts.domain.service.PostService;
 import com.rocket.domains.posts.infrastructure.persistence.jpa.PostLikeRepository;
 import com.rocket.domains.user.application.dto.response.UserSimpleInfoResponse;
+import com.rocket.domains.user.domain.entity.Address;
 import com.rocket.domains.user.domain.entity.User;
+import com.rocket.domains.user.domain.enums.Gender;
+import com.rocket.domains.user.domain.enums.Role;
 import com.rocket.domains.user.domain.facade.UserFacade;
 import com.rocket.domains.user.domain.repository.UserWriter;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
-import com.rocket.domains.user.domain.enums.Gender;
-import com.rocket.domains.user.domain.enums.Role;
-import com.rocket.domains.user.domain.entity.Address;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -37,13 +35,20 @@ class PostLikeIntegrationTest {
 
   @Autowired
   private PostLikeService postLikeService;
-  @Autowired private PostService postService;
-  @Autowired private UserFacade userFacade;
-  @Autowired private PostWriter postWriter;
-  @Autowired private PostReader postReader;
-  @Autowired private PostLikeCacheRepository redisRepo;
-  @Autowired private PostLikeRepository postLikeRepository;
-  @Autowired private UserWriter userWriter;
+  @Autowired
+  private PostService postService;
+  @Autowired
+  private UserFacade userFacade;
+  @Autowired
+  private PostWriter postWriter;
+  @Autowired
+  private PostReader postReader;
+  @Autowired
+  private PostLikeCacheRepository redisRepo;
+  @Autowired
+  private PostLikeRepository postLikeRepository;
+  @Autowired
+  private UserWriter userWriter;
 
   private User user;
   private Post post;
@@ -59,8 +64,7 @@ class PostLikeIntegrationTest {
         "테스터",
         "01012345678",
         Role.USER,
-        null
-    );
+        null);
     userWriter.saveUser(user);
     post = Post.create("테스트 제목", "테스트 내용", user);
     postWriter.savePost(post);
@@ -125,8 +129,7 @@ class PostLikeIntegrationTest {
     User other = User.create(
         "other@rocket.com", "pass123423es", 28, Gender.FEMALE,
         new Address("부산", "해운대", "센텀대로", "54321"),
-        "다른유저", "01099998888", Role.USER, null
-    );
+        "다른유저", "01099998888", Role.USER, null);
 
     userWriter.saveUser(other);
 

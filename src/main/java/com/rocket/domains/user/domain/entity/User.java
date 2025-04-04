@@ -4,9 +4,11 @@ import com.rocket.domains.user.application.dto.request.AddressRequest;
 import com.rocket.domains.user.application.dto.request.UserUpdateRequest;
 import com.rocket.domains.user.domain.enums.Gender;
 import com.rocket.domains.user.domain.enums.Role;
+import com.rocket.domains.user.domain.enums.UserStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -19,15 +21,20 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@Table(name = "User")
+@Table(name = "users")
+@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class User {
@@ -82,13 +89,41 @@ public class User {
   @Comment("역할")
   private Role role;
 
-  @Column(name = "profile_image_url")
+  @Column(name = "profile_url")
   @Comment("프로필 이미지 URL")
-  private String profileImageUrl;
+  private String profileUrl;
+
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  @Comment("계정 상태")
+  private UserStatus status;
+
+  @Column(name = "manner_score", nullable = false)
+  @Comment("매너 점수")
+  private Integer mannerScore;
+
+  @Column(name = "joined_group_id", nullable = true)
+  @Comment("가입한 그룹의 아이디")
+  private Long joinedGroupId;
+
+  @Column(name = "created_group_id")
+  @Comment("본인이 만든 그룹 아이디")
+  private Long createdGroupId;
+
+  @CreatedDate
+  @Column(name = "created_at", updatable = false)
+  @Comment("User 생성 일자")
+  private LocalDateTime createdAt;
+
+  @LastModifiedDate
+  @Comment("User 업데이트 일자")
+  @Column(name = "updated_at")
+  private LocalDateTime updatedAt;
 
 
   private User(String email, String password, int age, Gender gender, Address address,
-      String nickname, String phoneNumber, Role role, String profileImageUrl) {
+      String nickname, String phoneNumber, Role role, String profileUrl, UserStatus status,
+      Integer mannerScore, Long createdGroupId, Long joinedGroupId) {
     this.email = email;
     this.password = password;
     this.age = age;
@@ -97,15 +132,21 @@ public class User {
     this.nickname = nickname;
     this.phoneNumber = phoneNumber;
     this.role = role;
-    this.profileImageUrl = profileImageUrl;
+    this.profileUrl = profileUrl;
+    this.status = status;
+    this.mannerScore = mannerScore;
+    this.createdGroupId = createdGroupId;
+    this.joinedGroupId = joinedGroupId;
   }
 
   // @VisibleForTesting
   public static User createWithIdForTest(
       Long id, String email, String password, int age, Gender gender, Address address,
-      String nickname, String phoneNumber, Role role, String profileImageUrl
+      String nickname, String phoneNumber, Role role, String profileUrl, UserStatus status,
+      Integer mannerScore, Long createdGroupId, Long joinedGroupId
   ) {
-    User user = new User(email, password, age, gender, address, nickname, phoneNumber, role, profileImageUrl);
+    User user = new User(email, password, age, gender, address, nickname, phoneNumber, role,
+        profileUrl, status, mannerScore, createdGroupId, joinedGroupId);
     user.id = id;
     return user;
   }
@@ -121,9 +162,23 @@ public class User {
       @NotBlank String nickname,
       @NotBlank String phoneNumber,
       @NotBlank Role role,
-      String profileImageUrl
+      String profileUrl
   ) {
-    return new User(email, password, age, gender, address, nickname, phoneNumber, role, profileImageUrl);
+    return new User(
+        email,
+        password,
+        age,
+        gender,
+        address,
+        nickname,
+        phoneNumber,
+        role,
+        profileUrl,
+        UserStatus.ACTIVE,
+        60,
+        null,
+        null
+    );
   }
 
 
@@ -137,55 +192,74 @@ public class User {
         user.email) && Objects.equals(password, user.password) && Objects.equals(
         nickname, user.nickname) && gender == user.gender && Objects.equals(address,
         user.address) && Objects.equals(phoneNumber, user.phoneNumber) && role == user.role
-        && Objects.equals(profileImageUrl, user.profileImageUrl);
+        && Objects.equals(profileUrl, user.profileUrl) && status == user.status
+        && Objects.equals(mannerScore, user.mannerScore) && Objects.equals(
+        joinedGroupId, user.joinedGroupId) && Objects.equals(createdGroupId,
+        user.createdGroupId) && Objects.equals(createdAt, user.createdAt)
+        && Objects.equals(updatedAt, user.updatedAt);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(id, email, password, nickname, age, gender, address, phoneNumber, role,
-        profileImageUrl);
+        profileUrl, status, mannerScore, joinedGroupId, createdGroupId, createdAt, updatedAt);
   }
 
   public void updateFrom(UserUpdateRequest dto) {
-    boolean isUpdated = false;
+    updateEmailIfChanged(dto.email());
+    updateAgeIfChanged(dto.age());
+    updateGenderIfChanged(dto.gender());
+    updateNicknameIfChanged(dto.nickname());
+    updatePhoneNumberIfChanged(dto.phoneNumber());
+    updateProfileUrlIfChanged(dto.profileUrl());
+    updateAddressIfChanged(dto.address());
+  }
 
-    if (dto.age() != null && this.age != dto.age()) {
-      updateAge(dto.age());
-      isUpdated = true;
-    }
-    if (dto.gender() != null && this.gender != dto.gender()) {
-      updateGender(dto.gender());
-      isUpdated = true;
-    }
-    if (dto.address() != null && !this.address.equals(dto.address().toAddress())) {
-      updateAddress(dto.address());
-      isUpdated = true;
-    }
-    if (dto.nickname() != null && !this.nickname.equals(dto.nickname())) {
-      updateNickname(dto.nickname());
-      isUpdated = true;
-    }
-    if (dto.phoneNumber() != null && !this.phoneNumber.equals(dto.phoneNumber())) {
-      updatePhoneNumber(dto.phoneNumber());
-      isUpdated = true;
-    }
-
-    if (!isUpdated) {
-      throw new IllegalArgumentException("변경된 내용이 없습니다.");
+  private void updateEmailIfChanged(String email) {
+    if (email != null && !this.email.equals(email)) {
+      this.email = email;
     }
   }
 
-  public void updateProfileImageUrl(String profileImageUrl) {
-    // 이건 추후 구현하도록 하자.
-    // 기존 update 코드와 분리시켜 개발할 예정
+  private void updateAgeIfChanged(Integer age) {
+    if (age != null && age >= 0 && this.age != age) {
+      this.age = age;
+    }
   }
 
-  public void updateNickname(String newNickname) {
-    if (newNickname == null || newNickname.isEmpty()) {
-      throw new IllegalArgumentException("닉네임은 null일 수 없습니다.");
+  private void updateGenderIfChanged(Gender gender) {
+    if (gender != null && this.gender != gender) {
+      this.gender = gender;
     }
-    this.nickname = newNickname;
   }
+
+  private void updateNicknameIfChanged(String nickname) {
+    if (nickname != null && !this.nickname.equals(nickname)) {
+      this.nickname = nickname;
+    }
+  }
+
+  private void updatePhoneNumberIfChanged(String phoneNumber) {
+    if (phoneNumber != null && !this.phoneNumber.equals(phoneNumber)) {
+      this.phoneNumber = phoneNumber;
+    }
+  }
+
+  private void updateProfileUrlIfChanged(String profileUrl) {
+    if (profileUrl != null && !profileUrl.equals(this.profileUrl)) {
+      this.profileUrl = profileUrl;
+    }
+  }
+
+  private void updateAddressIfChanged(AddressRequest dto) {
+    if (dto == null) return;
+
+    Address newAddress = new Address(dto.state(), dto.city(), dto.street(), dto.zipCode());
+    if (!this.address.equals(newAddress)) {
+      this.address = newAddress;
+    }
+  }
+
 
   public void updatePassword(String newPassword) {
     if (newPassword == null || newPassword.length() < 6) {
@@ -194,44 +268,27 @@ public class User {
     this.password = newPassword;
   }
 
-  public void updateAge(Integer age) {
-    if (age < 0) {
-      throw new IllegalArgumentException("나이는 음수일 수 없습니다.");
+  public void activate() {
+    if (this.status == UserStatus.ACTIVE) {
+      throw new IllegalStateException("이미 활성화된 유저입니다.");
     }
-    this.age = age;
+    this.status = UserStatus.ACTIVE;
   }
 
-  public void updatePhoneNumber(String newPhoneNumber) {
-    if (newPhoneNumber == null) {
-      throw new IllegalArgumentException("전화번호는 null일 수 없습니다.");
+  public void suspend() {
+    if (this.status == UserStatus.BANNED) {
+      throw new IllegalStateException("영구 정지된 유저는 상태 변경이 불가합니다.");
     }
-    this.phoneNumber = newPhoneNumber;
-  }
-
-  public void updateGender(Gender gender) {
-    if (gender == null) {
-      throw new IllegalArgumentException("성별은 null일 수 없습니다.");
+    if (this.status == UserStatus.SUSPENDED) {
+      return;
     }
-    this.gender = gender;
+    this.status = UserStatus.SUSPENDED;
   }
 
-  public void updateAddress(AddressRequest address) {
-    if (address == null) {
-      throw new IllegalArgumentException("주소는 null일 수 없습니다.");
+  public void ban() {
+    if (this.status == UserStatus.BANNED) {
+      throw new IllegalStateException("이미 영구 정지된 유저여서 상태 변경이 불가능합니다.");
     }
-    this.address = new Address(
-        address.state(),
-        address.city(),
-        address.street(),
-        address.zipCode()
-    );
-  }
-
-  public boolean isAdmin() {
-    return this.role == Role.ADMIN;
-  }
-
-  public String getProfileImageUrl() {
-    return null;
+    this.status = UserStatus.BANNED;
   }
 }

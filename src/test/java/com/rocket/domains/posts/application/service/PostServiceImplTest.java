@@ -23,6 +23,7 @@ import com.rocket.domains.user.domain.entity.Address;
 import com.rocket.domains.user.domain.entity.User;
 import com.rocket.domains.user.domain.enums.Gender;
 import com.rocket.domains.user.domain.enums.Role;
+import com.rocket.domains.user.domain.enums.UserStatus;
 import com.rocket.domains.user.domain.facade.UserFacade;
 import com.rocket.domains.user.domain.service.UserLookupService;
 import java.util.List;
@@ -64,14 +65,27 @@ class PostServiceImplTest {
   void setUp() {
     // Given
     normalUser = User.createWithIdForTest(
-        1L, "test@example.com", "password123!", 25,
-        Gender.MALE, new Address("state", "city", "street", "11111"),
-        "testNick", "01099999999", Role.USER, null
+        1L,
+        "test@example.com",
+        "password",
+        30,
+        Gender.MALE,
+        new Address("sta", "dci", "sttr", "zc"),
+        "Toin",
+        "01001000000",
+        Role.USER,
+        null,
+        UserStatus.ACTIVE,
+        60,
+        null,
+        null
     );
+
     adminUser = User.createWithIdForTest(
         2L, "admin@example.com", "adminPass!!!", 30,
         Gender.FEMALE, new Address("st", "ct", "st", "22222"),
-        "adminNick", "01088888888", Role.ADMIN, null
+        "adminNick", "01088888888", Role.ADMIN, null, UserStatus.ACTIVE,
+        70, null, null
     );
 
     samplePost = Post.create("SampleTitle", "SampleContent", normalUser);
@@ -85,15 +99,19 @@ class PostServiceImplTest {
   // ------------------------------------------
   private User createUser(Long id, Role role) {
     User user = User.createWithIdForTest(
-        id,                           // id
-        "test@example.com",                  // email
-        "password123!",                      // password
-        25,                                  // age
-        Gender.MALE,                         // gender
-        new Address("state", "city", "street", "11111"), // address
-        "testNick",                          // nickname
-        "01099999999",                       // phoneNumber
-        role,                            // role
+        1L,
+        "test@example.com",
+        "password",
+        30,
+        Gender.MALE,
+        new Address("st", "ci", "stt1r", "zc"),
+        "Toin",
+        "01001000000",
+        Role.USER,
+        null,
+        UserStatus.ACTIVE,
+        60,
+        null,
         null
     );
 

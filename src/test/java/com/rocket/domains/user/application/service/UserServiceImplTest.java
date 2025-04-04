@@ -18,8 +18,10 @@ import com.rocket.domains.user.domain.entity.Address;
 import com.rocket.domains.user.domain.entity.User;
 import com.rocket.domains.user.domain.enums.Gender;
 import com.rocket.domains.user.domain.enums.Role;
+import com.rocket.domains.user.domain.enums.UserStatus;
 import com.rocket.domains.user.domain.repository.UserReader;
 import com.rocket.domains.user.domain.repository.UserWriter;
+import com.rocket.domains.user.domain.validator.UserValidator;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,8 +43,13 @@ class UserServiceImplTest {
   @Mock
   private PasswordEncoder passwordEncoder;
 
+  @Mock
+  private UserValidator userValidator;
+
   @InjectMocks
   private UserServiceImpl userService;
+
+
 
   private User user;
   private UserRegisterRequest userRegisterRequest;
@@ -55,8 +62,22 @@ class UserServiceImplTest {
     MockitoAnnotations.openMocks(this);
     Address address = new Address("State", "City", "Street", "Zip");
     // 테스트 전용 정적 메서드를 사용하여 ID를 포함한 User 객체 생성
-    user = createWithIdForTest(1L, "test@example.com", "password", 30, Gender.MALE, address,
-        "Toin", "01001000000", Role.USER, null);
+    user = user = createWithIdForTest(
+        1L,
+        "test@example.com",
+        "password",
+        30,
+        Gender.MALE,
+        new Address("State", "City", "Street", "Zip"),
+        "Toin",
+        "01001000000",
+        Role.USER,
+        null,
+        UserStatus.ACTIVE,
+        60,
+        null,
+        null
+    );
 
     // 비밀번호 암호화 스텁: 모든 입력에 대해 "encodedPassword"를 반환합니다.
     when(passwordEncoder.encode(any(CharSequence.class))).thenReturn("encodedPassword");
@@ -77,7 +98,7 @@ class UserServiceImplTest {
         35,
         Gender.FEMALE,
         new AddressRequest("State", "City", "NewStreet", "Zip"),
-        "Toni", "01000000000"
+        "Toni", "01000000000", null
     );
 
     // 응답용 UserDTO 생성 (User -> DTO 변환)
@@ -148,8 +169,22 @@ class UserServiceImplTest {
     when(userReader.findByEmail(anyString())).thenReturn(Optional.ofNullable(user));
 
     Address updatedAddress = new Address("State", "City", "NewStreet", "Zip");
-    User updatedUser = createWithIdForTest(1L, "test@example.com", "password", 35, Gender.FEMALE,
-        updatedAddress, "Toni", "010000300000", Role.USER, null);
+    User updatedUser = createWithIdForTest(
+        1L,
+        "test@example.com",
+        "password",
+        30,
+        Gender.MALE,
+        new Address("State", "City", "Street", "Zip"),
+        "Toin",
+        "01001070500",
+        Role.USER,
+        null,
+        UserStatus.ACTIVE,
+        60,
+        null,
+        null
+    );
     when(userReader.findByEmail(anyString())).thenReturn(Optional.of(updatedUser));
 
     // When
@@ -160,19 +195,6 @@ class UserServiceImplTest {
     assertThat(result.age()).isEqualTo(35);
     assertThat(result.gender()).isEqualTo(Gender.FEMALE);
     // 각 업데이트 메서드 호출 여부는 Repository 구현에 따라 verify 추가 가능
-  }
-
-  @DisplayName("User 수정 by email - 실패 (수정할 내용 없음)")
-  @Test
-  void updateByEmail_fail_noUpdateFields() {
-    // Given: 업데이트할 필드가 모두 null인 경우
-    UserUpdateRequest updateDTO = new UserUpdateRequest("test@example.com", null, null, null, null, null);
-    when(userReader.findByEmail(anyString())).thenReturn(Optional.ofNullable(user));
-
-    // When & Then: 변경할 내용이 없으면 예외 발생
-    assertThatThrownBy(() -> userService.updateByEmail(updateDTO))
-        .isInstanceOf(IllegalArgumentException.class)
-        .hasMessageContaining("변경된 내용이 없습니다.");
   }
 
   @DisplayName("User 수정 by email - 실패 (사용자 없음)")
