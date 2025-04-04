@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record UserRegisterRequest(
@@ -32,12 +33,13 @@ public record UserRegisterRequest(
     String nickname,
 
     @NotBlank(message = "전화번호는 필수입니다.")
+    @Pattern(regexp = "^\\d{10,11}$", message = "전화번호는 숫자만 입력해주세요.")
     String phoneNumber,
 
     @NotNull(message = "역할은 필수입니다.")
     Role role,
 
-    String profileImageUrl
+    String profileUrl
 ) {
 
 }

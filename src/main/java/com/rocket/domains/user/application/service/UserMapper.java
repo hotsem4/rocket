@@ -19,9 +19,8 @@ public class UserMapper {
         dto.nickname(),
         dto.phoneNumber(),
         dto.role(),
-        dto.profileImageUrl()
+        dto.profileUrl()
     );
-
   }
 
   private static Address toAddress(AddressRequest dto) {
@@ -49,7 +48,7 @@ public class UserMapper {
     return new UserSimpleInfoResponse(
         user.getId(),
         user.getNickname(),
-        user.getProfileImageUrl()
+        user.getProfileUrl()
     );
   }
 }

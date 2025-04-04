@@ -2,7 +2,6 @@ package com.rocket.domains.posts.domain.entity;
 
 import com.rocket.domains.posts.application.dto.request.PostUpdateRequest;
 import com.rocket.domains.user.domain.entity.User;
-import com.rocket.domains.user.domain.enums.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -104,6 +103,9 @@ public class Post {
     return this.author.getId().equals(user.getId());
   }
 
+  public boolean canBeModifiedBy(User user) {
+    return this.isOwnedBy(user) || user.getRole().isAdmin();
+  }
 
 
   @Override

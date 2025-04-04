@@ -10,10 +10,11 @@ public record UserUpdateRequest(
     AddressRequest address,
     @Size(max = 30, message = "닉네임은 최대 30자까지 입력 가능합니다.")
     String nickname,
-    String phoneNumber
+    String phoneNumber,
+    String profileUrl
 ) {
 
   public UserUpdateRequest withEmail(String email) {
-    return new UserUpdateRequest(email, age, gender, address, nickname, phoneNumber);
+    return new UserUpdateRequest(email, age, gender, address, nickname, phoneNumber, profileUrl);
   }
 }

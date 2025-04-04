@@ -18,7 +18,6 @@ import com.rocket.domains.user.domain.service.UserLookupService;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +43,6 @@ public class PostServiceImpl implements PostService {
         .orElseThrow(() -> new UserNotFoundException("로그인 유저를 찾을 수 없습니다."));
 
     Post post = PostMapper.toEntity(dto, author);
-
 
     Post savedPost = postWriter.savePost(post);
     if (savedPost == null) {
@@ -76,7 +74,7 @@ public class PostServiceImpl implements PostService {
     User user = userFacade.findById(userId)
         .orElseThrow(() -> new UserNotFoundException(String.valueOf(userId)));
 
-    if (!post.isOwnedBy(user) && !user.isAdmin()) {
+    if (!post.canBeModifiedBy(user)) {
       throw new AccessDeniedCustomException("게시글 수정 권한이 없습니다.");
     }
 
@@ -92,7 +90,7 @@ public class PostServiceImpl implements PostService {
 
     User user = userFacade.getByIdOrThrow(userId);
 
-    if (!post.isOwnedBy(user) && !user.isAdmin()){
+    if (!post.isOwnedBy(user) && !user.getRole().isAdmin()) {
       throw new AccessDeniedCustomException("게시글을 삭제할 권한이 없습니다.");
     }
 
